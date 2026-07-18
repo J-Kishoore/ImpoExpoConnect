@@ -84,3 +84,23 @@ export function loginAdmin(payload: { email: string; password: string }) {
 export function getMe(token: string) {
   return apiFetch<MeResponse>("/me", { method: "GET" }, token);
 }
+
+export type BuyerUpdatePayload = Partial<
+  Pick<BuyerProfile, "companyName" | "contactName" | "email" | "phone" | "country" | "status">
+>;
+
+type BuyerListResponse = { success: true; buyers: BuyerProfile[] };
+type BuyerUpdateResponse = { success: true; buyer: BuyerProfile };
+type BuyerDeleteResponse = { success: true; id: string };
+
+export function listBuyers(token: string) {
+  return apiFetch<BuyerListResponse>("/admin/buyers", { method: "GET" }, token);
+}
+
+export function updateBuyer(token: string, id: string, patch: BuyerUpdatePayload) {
+  return apiFetch<BuyerUpdateResponse>(`/admin/buyers/${id}`, { method: "PATCH", body: JSON.stringify(patch) }, token);
+}
+
+export function deleteBuyer(token: string, id: string) {
+  return apiFetch<BuyerDeleteResponse>(`/admin/buyers/${id}`, { method: "DELETE" }, token);
+}
