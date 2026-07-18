@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { BrowserRouter, useLocation, useNavigate } from "react-router";
 import type { View } from "./types";
 import { portalTitles } from "./data";
-import { Toast, ChatWidget } from "./components/shared";
+import { pathFromView, viewFromPath } from "./lib/routes";
+import { Btn, Toast, ChatWidget } from "./components/shared";
 import { PublicHeader, Sidebar, PortalTopBar } from "./components/layout";
 import { HomeView, ProductsView, AboutView, ContactView } from "./views/public";
 import {
@@ -21,9 +23,23 @@ const ADMIN_VIEWS = new Set<View>([
   "admin-dashboard", "admin-buyers", "admin-products", "admin-orders", "admin-payments", "admin-reports",
 ]);
 
+function NotFound({ setView }: { setView: (v: View) => void }) {
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center gap-4 text-center px-4">
+      <h1 className="text-2xl font-semibold text-foreground" style={{ fontFamily: "Fraunces, serif" }}>Page not found</h1>
+      <p className="text-sm text-muted-foreground">The page you're looking for doesn't exist.</p>
+      <Btn variant="primary" onClick={() => setView("home")}>Back to Home</Btn>
+    </div>
+  );
+}
+
 function AppShell() {
   const auth = useAuth();
-  const [view, setView] = useState<View>("home");
+  const location = useLocation();
+  const navigate = useNavigate();
+  const view = viewFromPath(location.pathname);
+  const setView = (v: View) => navigate(pathFromView(v));
+
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" | "info" } | null>(null);
 
@@ -38,6 +54,10 @@ function AppShell() {
         <div className="w-8 h-8 border-2 border-[#1e5c3a] border-t-transparent rounded-full animate-spin" />
       </div>
     );
+  }
+
+  if (view === null) {
+    return <NotFound setView={setView} />;
   }
 
   // Central RBAC gate: any buyer-/admin-only view falls back to that portal's
@@ -110,8 +130,10 @@ function AppShell() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <AppShell />
-    </AuthProvider>
+    <BrowserRouter>
+      <AuthProvider>
+        <AppShell />
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
