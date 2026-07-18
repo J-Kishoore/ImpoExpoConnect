@@ -1,19 +1,29 @@
 import { useState } from "react";
-import type { View, Portal } from "./types";
+import type { View } from "./types";
 import { portalTitles } from "./data";
 import { Toast, ChatWidget } from "./components/shared";
 import { PublicHeader, Sidebar, PortalTopBar } from "./components/layout";
 import { HomeView, ProductsView, AboutView, ContactView } from "./views/public";
 import {
+  BuyerLogin, BuyerRegister,
   BuyerDashboard, BuyerCatalog, BuyerOrderForm, BuyerTracking, BuyerQuotations, BuyerPayment,
 } from "./views/buyer";
 import {
+  AdminLogin, AdminRegister,
   AdminDashboard, AdminBuyers, AdminProducts, AdminOrders, AdminPayments, AdminReports,
 } from "./views/admin";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 
-export default function App() {
+const BUYER_VIEWS = new Set<View>([
+  "buyer-dashboard", "buyer-catalog", "buyer-order-form", "buyer-tracking", "buyer-quotations", "buyer-payment",
+]);
+const ADMIN_VIEWS = new Set<View>([
+  "admin-dashboard", "admin-buyers", "admin-products", "admin-orders", "admin-payments", "admin-reports",
+]);
+
+function AppShell() {
+  const auth = useAuth();
   const [view, setView] = useState<View>("home");
-  const [portal, setPortal] = useState<Portal>("public");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" | "info" } | null>(null);
 
@@ -22,46 +32,72 @@ export default function App() {
     setTimeout(() => setToast(null), 4000);
   };
 
-  const isPortal = portal !== "public";
-  const offset = isPortal ? (sidebarCollapsed ? "ml-16" : "ml-56") : "";
+  if (!auth.isReady) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="w-8 h-8 border-2 border-[#1e5c3a] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
+  // Central RBAC gate: any buyer-/admin-only view falls back to that portal's
+  // login screen unless the authenticated role actually matches.
   const renderContent = () => {
+    if (BUYER_VIEWS.has(view) && auth.role !== "buyer") {
+      return <BuyerLogin setView={setView} showToast={showToast} />;
+    }
+    if (ADMIN_VIEWS.has(view) && auth.role !== "admin") {
+      return <AdminLogin setView={setView} showToast={showToast} />;
+    }
+
     switch (view) {
-      case "home": return <HomeView setView={setView} setPortal={setPortal} />;
-      case "products": return <ProductsView setView={setView} setPortal={setPortal} />;
+      case "home": return <HomeView setView={setView} />;
+      case "products": return <ProductsView setView={setView} />;
       case "about": return <AboutView />;
       case "contact": return <ContactView showToast={showToast} />;
+
+      case "buyer-login":
+        return auth.role === "buyer" ? <BuyerDashboard setView={setView} /> : <BuyerLogin setView={setView} showToast={showToast} />;
+      case "buyer-register":
+        return auth.role === "buyer" ? <BuyerDashboard setView={setView} /> : <BuyerRegister setView={setView} showToast={showToast} />;
       case "buyer-dashboard": return <BuyerDashboard setView={setView} />;
       case "buyer-catalog": return <BuyerCatalog setView={setView} />;
       case "buyer-order-form": return <BuyerOrderForm showToast={showToast} />;
       case "buyer-tracking": return <BuyerTracking />;
       case "buyer-quotations": return <BuyerQuotations showToast={showToast} />;
       case "buyer-payment": return <BuyerPayment showToast={showToast} />;
+
+      case "admin-login":
+        return auth.role === "admin" ? <AdminDashboard /> : <AdminLogin setView={setView} showToast={showToast} />;
+      case "admin-register":
+        return auth.role === "admin" ? <AdminDashboard /> : <AdminRegister setView={setView} showToast={showToast} />;
       case "admin-dashboard": return <AdminDashboard />;
       case "admin-buyers": return <AdminBuyers showToast={showToast} />;
       case "admin-products": return <AdminProducts showToast={showToast} />;
       case "admin-orders": return <AdminOrders showToast={showToast} />;
       case "admin-payments": return <AdminPayments showToast={showToast} />;
       case "admin-reports": return <AdminReports showToast={showToast} />;
+
       default: return null;
     }
   };
 
+  const isPortalShell = (BUYER_VIEWS.has(view) && auth.role === "buyer") || (ADMIN_VIEWS.has(view) && auth.role === "admin");
+  const offset = isPortalShell ? (sidebarCollapsed ? "ml-16" : "ml-56") : "";
+
   return (
     <div className="min-h-screen bg-background" style={{ fontFamily: "Plus Jakarta Sans, sans-serif" }}>
-      {isPortal && (
+      {isPortalShell ? (
         <>
-          <Sidebar portal={portal} view={view} setView={setView} setPortal={setPortal}
-            collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
-          <PortalTopBar title={portalTitles[view] || ""} portal={portal} collapsed={sidebarCollapsed} />
+          <Sidebar view={view} setView={setView} collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
+          <PortalTopBar title={portalTitles[view] || ""} collapsed={sidebarCollapsed} />
         </>
+      ) : (
+        <PublicHeader view={view} setView={setView} />
       )}
-      {!isPortal && <PublicHeader view={view} setView={setView} setPortal={setPortal} />}
       <main className={`transition-all duration-200 ${offset}`}>
-        {isPortal ? (
-          <div className="pt-16 p-6 min-h-screen">
-            {renderContent()}
-          </div>
+        {isPortalShell ? (
+          <div className="pt-16 p-6 min-h-screen">{renderContent()}</div>
         ) : (
           <div>{renderContent()}</div>
         )}
@@ -69,5 +105,13 @@ export default function App() {
       <ChatWidget />
       {toast && <Toast message={toast.msg} type={toast.type} onClose={() => setToast(null)} />}
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppShell />
+    </AuthProvider>
   );
 }

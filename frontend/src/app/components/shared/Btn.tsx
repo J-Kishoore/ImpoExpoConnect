@@ -1,10 +1,10 @@
 import type { ReactNode } from "react";
 
-export function Btn({ children, variant = "primary", size = "md", onClick, className = "" }: {
+export function Btn({ children, variant = "primary", size = "md", onClick, className = "", disabled = false, type }: {
   children: ReactNode; variant?: "primary" | "secondary" | "ghost" | "accent" | "danger";
-  size?: "sm" | "md" | "lg"; onClick?: () => void; className?: string;
+  size?: "sm" | "md" | "lg"; onClick?: () => void; className?: string; disabled?: boolean; type?: "button" | "submit";
 }) {
-  const base = "inline-flex items-center gap-1.5 font-medium rounded transition-all duration-150 cursor-pointer";
+  const base = "inline-flex items-center gap-1.5 font-medium rounded transition-all duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
   const sizes = { sm: "px-3 py-1.5 text-xs", md: "px-4 py-2 text-sm", lg: "px-6 py-3 text-base" };
   const variants = {
     primary: "bg-[#1e5c3a] text-white hover:bg-[#174d30] shadow-sm",
@@ -14,7 +14,7 @@ export function Btn({ children, variant = "primary", size = "md", onClick, class
     danger: "bg-red-600 text-white hover:bg-red-700 shadow-sm",
   };
   return (
-    <button onClick={onClick} className={`${base} ${sizes[size]} ${variants[variant]} ${className}`}>
+    <button type={type} onClick={onClick} disabled={disabled} className={`${base} ${sizes[size]} ${variants[variant]} ${className}`}>
       {children}
     </button>
   );

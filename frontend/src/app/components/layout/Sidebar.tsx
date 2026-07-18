@@ -1,13 +1,16 @@
 import { Package, ShoppingCart, FileText, CreditCard, Menu, Home, Users, LogOut, ChevronRight, Leaf, Globe, BarChart2, Truck } from "lucide-react";
 import type { ElementType } from "react";
-import type { View, Portal } from "../../types";
+import type { View } from "../../types";
+import { useAuth } from "../../context/AuthContext";
+import type { AdminProfile, BuyerProfile } from "../../lib/api";
 
 type NavItem = { icon: ElementType; label: string; view: View };
 
-export function Sidebar({ portal, view, setView, setPortal, collapsed, setCollapsed }: {
-  portal: Portal; view: View; setView: (v: View) => void; setPortal: (p: Portal) => void;
+export function Sidebar({ view, setView, collapsed, setCollapsed }: {
+  view: View; setView: (v: View) => void;
   collapsed: boolean; setCollapsed: (v: boolean) => void;
 }) {
+  const { role, profile, logout } = useAuth();
   const buyerNav: NavItem[] = [
     { icon: Home, label: "Dashboard", view: "buyer-dashboard" },
     { icon: Package, label: "Product Catalog", view: "buyer-catalog" },
@@ -24,9 +27,16 @@ export function Sidebar({ portal, view, setView, setPortal, collapsed, setCollap
     { icon: CreditCard, label: "Payments", view: "admin-payments" },
     { icon: FileText, label: "Reports", view: "admin-reports" },
   ];
-  const nav = portal === "buyer" ? buyerNav : adminNav;
-  const name = portal === "buyer" ? "Al Fajr Trading" : "Admin Panel";
-  const role = portal === "buyer" ? "Buyer Account" : "Makgrow Impex";
+  const nav = role === "buyer" ? buyerNav : adminNav;
+  const name = role === "buyer" ? (profile as BuyerProfile | null)?.companyName : (profile as AdminProfile | null)?.name;
+  const displayName = name || (role === "buyer" ? "Buyer" : "Admin");
+  const subLabel = role === "buyer" ? "Buyer Account" : "Makgrow Impex";
+  const email = profile?.email ?? "";
+
+  const handleLogout = () => {
+    logout();
+    setView("home");
+  };
 
   return (
     <aside className={`fixed left-0 top-0 h-full z-20 flex flex-col transition-all duration-200 ${collapsed ? "w-16" : "w-56"}`}
@@ -39,7 +49,7 @@ export function Sidebar({ portal, view, setView, setPortal, collapsed, setCollap
             </div>
             <div className="min-w-0">
               <p className="text-xs font-semibold text-white truncate" style={{ fontFamily: "Fraunces, serif" }}>ImpoExpo</p>
-              <p className="text-[10px] truncate" style={{ color: "var(--sidebar-accent-foreground)" }}>{role}</p>
+              <p className="text-[10px] truncate" style={{ color: "var(--sidebar-accent-foreground)" }}>{subLabel}</p>
             </div>
           </div>
         )}
@@ -51,13 +61,11 @@ export function Sidebar({ portal, view, setView, setPortal, collapsed, setCollap
         <div className="px-3 py-3 border-b" style={{ borderColor: "var(--sidebar-border)" }}>
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
-              {name.charAt(0)}
+              {displayName.charAt(0).toUpperCase()}
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-medium text-white truncate">{name}</p>
-              <p className="text-xs truncate" style={{ color: "var(--sidebar-accent-foreground)" }}>
-                {portal === "buyer" ? "B-001" : "Super Admin"}
-              </p>
+              <p className="text-sm font-medium text-white truncate">{displayName}</p>
+              <p className="text-xs truncate" style={{ color: "var(--sidebar-accent-foreground)" }}>{email}</p>
             </div>
           </div>
         </div>
@@ -78,13 +86,13 @@ export function Sidebar({ portal, view, setView, setPortal, collapsed, setCollap
       </nav>
       <div className="px-2 pb-4 space-y-0.5 border-t pt-3" style={{ borderColor: "var(--sidebar-border)" }}>
         {!collapsed && (
-          <button onClick={() => { setPortal("public"); setView("home"); }}
+          <button onClick={() => setView("home")}
             className="w-full flex items-center gap-3 px-2.5 py-2.5 rounded-lg text-sm text-white/50 hover:bg-white/5 hover:text-white transition-colors">
             <Globe size={17} />
             <span>Public Site</span>
           </button>
         )}
-        <button className="w-full flex items-center gap-3 px-2.5 py-2.5 rounded-lg text-sm text-white/50 hover:bg-white/5 hover:text-white transition-colors"
+        <button onClick={handleLogout} className="w-full flex items-center gap-3 px-2.5 py-2.5 rounded-lg text-sm text-white/50 hover:bg-white/5 hover:text-white transition-colors"
           title={collapsed ? "Logout" : undefined}>
           <LogOut size={17} className="flex-shrink-0" />
           {!collapsed && <span>Logout</span>}

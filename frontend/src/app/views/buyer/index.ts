@@ -1,3 +1,5 @@
+export { BuyerLogin } from "./BuyerLogin";
+export { BuyerRegister } from "./BuyerRegister";
 export { BuyerDashboard } from "./BuyerDashboard";
 export { BuyerCatalog } from "./BuyerCatalog";
 export { BuyerOrderForm } from "./BuyerOrderForm";

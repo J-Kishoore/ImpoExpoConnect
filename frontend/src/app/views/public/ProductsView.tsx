@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { ShoppingCart } from "lucide-react";
-import type { View, Portal } from "../../types";
+import type { View } from "../../types";
 import { products } from "../../data";
 import { Badge, Btn, Card } from "../../components/shared";
 
-export function ProductsView({ setView, setPortal }: { setView: (v: View) => void; setPortal: (p: Portal) => void }) {
+export function ProductsView({ setView }: { setView: (v: View) => void }) {
   const [category, setCategory] = useState("All");
   const cats = ["All", "Grains", "Vegetables", "Pulses", "Processed"];
   const filtered = category === "All" ? products : products.filter(p => p.category === category);
@@ -38,7 +38,7 @@ export function ProductsView({ setView, setPortal }: { setView: (v: View) => voi
               <p className="text-xs text-muted-foreground mb-3">{p.category} · Min order: {p.minOrder}</p>
               <div className="flex items-center justify-between">
                 <p className="text-base font-semibold text-[#1e5c3a]">{p.price} <span className="text-xs font-normal text-muted-foreground">/ {p.unit}</span></p>
-                <Btn variant="primary" size="sm" onClick={() => { setPortal("buyer"); setView("buyer-order-form"); }}>
+                <Btn variant="primary" size="sm" onClick={() => setView("buyer-order-form")}>
                   <ShoppingCart size={13} /> Order
                 </Btn>
               </div>

@@ -18,7 +18,11 @@ if (missing.length) {
 const config = {
   port: process.env.PORT || 5000,
   nodeEnv: process.env.NODE_ENV || "development",
-  corsOrigin: process.env.CORS_ORIGIN || "http://localhost:5173",
+  // Comma-separated list, e.g. "http://localhost:5173,http://localhost:5174"
+  corsOrigins: (process.env.CORS_ORIGIN || "http://localhost:5173")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean),
   jwtSecret: process.env.JWT_SECRET,
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || "2h",
   adminInviteCode: process.env.ADMIN_INVITE_CODE || null,

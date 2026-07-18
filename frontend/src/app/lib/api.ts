@@ -1,0 +1,86 @@
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
+export class ApiError extends Error {
+  status: number;
+  constructor(status: number, message: string) {
+    super(message);
+    this.status = status;
+  }
+}
+
+async function apiFetch<T>(path: string, options: RequestInit = {}, token?: string | null): Promise<T> {
+  const res = await fetch(`${API_BASE_URL}${path}`, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...options.headers,
+    },
+  });
+
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new ApiError(res.status, body.message || "Something went wrong. Please try again.");
+  }
+  return body as T;
+}
+
+export type BuyerProfile = {
+  id: string;
+  companyName: string;
+  contactName: string;
+  email: string;
+  phone: string | null;
+  country: string | null;
+  status: "Pending" | "Active" | "Suspended";
+  createdAt: string;
+};
+
+export type AdminProfile = {
+  id: string;
+  name: string;
+  email: string;
+  createdAt: string;
+};
+
+export type BuyerRegisterPayload = {
+  companyName: string;
+  contactName: string;
+  email: string;
+  password: string;
+  country?: string;
+  phone?: string;
+};
+
+export type AdminRegisterPayload = {
+  name: string;
+  email: string;
+  password: string;
+  inviteCode: string;
+};
+
+type BuyerAuthResponse = { success: true; token: string; buyer: BuyerProfile };
+type AdminAuthResponse = { success: true; token: string; admin: AdminProfile };
+type MeResponse =
+  | { success: true; role: "buyer"; profile: BuyerProfile }
+  | { success: true; role: "admin"; profile: AdminProfile };
+
+export function registerBuyer(payload: BuyerRegisterPayload) {
+  return apiFetch<BuyerAuthResponse>("/buyer/register", { method: "POST", body: JSON.stringify(payload) });
+}
+
+export function loginBuyer(payload: { email: string; password: string }) {
+  return apiFetch<BuyerAuthResponse>("/buyer/login", { method: "POST", body: JSON.stringify(payload) });
+}
+
+export function registerAdmin(payload: AdminRegisterPayload) {
+  return apiFetch<AdminAuthResponse>("/admin/register", { method: "POST", body: JSON.stringify(payload) });
+}
+
+export function loginAdmin(payload: { email: string; password: string }) {
+  return apiFetch<AdminAuthResponse>("/admin/login", { method: "POST", body: JSON.stringify(payload) });
+}
+
+export function getMe(token: string) {
+  return apiFetch<MeResponse>("/me", { method: "GET" }, token);
+}

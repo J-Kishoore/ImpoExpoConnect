@@ -4,3 +4,4 @@ export { Card } from "./Card";
 export { StatCard } from "./StatCard";
 export { Toast } from "./Toast";
 export { ChatWidget } from "./ChatWidget";
+export { AuthLayout } from "./AuthLayout";

@@ -1,3 +1,5 @@
+export { AdminLogin } from "./AdminLogin";
+export { AdminRegister } from "./AdminRegister";
 export { AdminDashboard } from "./AdminDashboard";
 export { AdminBuyers } from "./AdminBuyers";
 export { AdminProducts } from "./AdminProducts";

@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Menu, X, Leaf } from "lucide-react";
-import type { View, Portal } from "../../types";
+import type { View } from "../../types";
 import { Btn } from "../shared";
+import { useAuth } from "../../context/AuthContext";
 
-export function PublicHeader({ view, setView, setPortal }: { view: View; setView: (v: View) => void; setPortal: (p: Portal) => void }) {
+export function PublicHeader({ view, setView }: { view: View; setView: (v: View) => void }) {
+  const { role } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
   const links: { label: string; v: View }[] = [
     { label: "Home", v: "home" },
@@ -11,6 +13,12 @@ export function PublicHeader({ view, setView, setPortal }: { view: View; setView
     { label: "About", v: "about" },
     { label: "Contact", v: "contact" },
   ];
+  const portalCta = role === "buyer"
+    ? { label: "Buyer Dashboard", v: "buyer-dashboard" as View }
+    : role === "admin"
+      ? { label: "Admin Dashboard", v: "admin-dashboard" as View }
+      : null;
+
   return (
     <header className="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-border">
       <div className="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between">
@@ -32,8 +40,14 @@ export function PublicHeader({ view, setView, setPortal }: { view: View; setView
           ))}
         </nav>
         <div className="hidden md:flex items-center gap-2">
-          <Btn variant="secondary" size="sm" onClick={() => { setPortal("buyer"); setView("buyer-dashboard"); }}>Buyer Login</Btn>
-          <Btn variant="primary" size="sm" onClick={() => { setPortal("admin"); setView("admin-dashboard"); }}>Admin</Btn>
+          {portalCta ? (
+            <Btn variant="primary" size="sm" onClick={() => setView(portalCta.v)}>{portalCta.label}</Btn>
+          ) : (
+            <>
+              <Btn variant="secondary" size="sm" onClick={() => setView("buyer-login")}>Buyer Login</Btn>
+              <Btn variant="primary" size="sm" onClick={() => setView("admin-login")}>Admin</Btn>
+            </>
+          )}
         </div>
         <button className="md:hidden p-2 text-muted-foreground" onClick={() => setMobileOpen(!mobileOpen)}>
           {mobileOpen ? <X size={20} /> : <Menu size={20} />}
@@ -46,8 +60,14 @@ export function PublicHeader({ view, setView, setPortal }: { view: View; setView
               className="block w-full text-left px-3 py-2 rounded text-sm text-foreground hover:bg-[#f0ece5]">{l.label}</button>
           ))}
           <div className="flex gap-2 pt-2">
-            <Btn variant="secondary" size="sm" onClick={() => { setPortal("buyer"); setView("buyer-dashboard"); setMobileOpen(false); }}>Buyer Login</Btn>
-            <Btn variant="primary" size="sm" onClick={() => { setPortal("admin"); setView("admin-dashboard"); setMobileOpen(false); }}>Admin</Btn>
+            {portalCta ? (
+              <Btn variant="primary" size="sm" onClick={() => { setView(portalCta.v); setMobileOpen(false); }}>{portalCta.label}</Btn>
+            ) : (
+              <>
+                <Btn variant="secondary" size="sm" onClick={() => { setView("buyer-login"); setMobileOpen(false); }}>Buyer Login</Btn>
+                <Btn variant="primary" size="sm" onClick={() => { setView("admin-login"); setMobileOpen(false); }}>Admin</Btn>
+              </>
+            )}
           </div>
         </div>
       )}

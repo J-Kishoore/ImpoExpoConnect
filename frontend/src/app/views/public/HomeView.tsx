@@ -1,9 +1,9 @@
 import { Leaf, Package, ShoppingCart, Shield, Globe, TrendingUp, ArrowRight, Phone, Mail, MapPin } from "lucide-react";
-import type { View, Portal } from "../../types";
+import type { View } from "../../types";
 import { products } from "../../data";
 import { Badge, Btn, Card } from "../../components/shared";
 
-export function HomeView({ setView, setPortal }: { setView: (v: View) => void; setPortal: (p: Portal) => void }) {
+export function HomeView({ setView }: { setView: (v: View) => void }) {
   return (
     <div>
       {/* Hero */}
@@ -29,7 +29,7 @@ export function HomeView({ setView, setPortal }: { setView: (v: View) => void; s
               <Btn variant="accent" size="lg" onClick={() => setView("products")}>
                 <Package size={16} /> Browse Products
               </Btn>
-              <button onClick={() => { setPortal("buyer"); setView("buyer-order-form"); }}
+              <button onClick={() => setView("buyer-order-form")}
                 className="px-6 py-3 rounded border border-white/30 text-white text-base font-medium hover:bg-white/10 transition-colors flex items-center gap-2">
                 <ShoppingCart size={16} /> Request Bulk Order
               </button>
@@ -114,7 +114,7 @@ export function HomeView({ setView, setPortal }: { setView: (v: View) => void; s
           </div>
           <div className="flex gap-3 flex-shrink-0">
             <Btn variant="accent" size="lg" onClick={() => setView("contact")}>Get in Touch</Btn>
-            <button onClick={() => { setPortal("buyer"); setView("buyer-dashboard"); }}
+            <button onClick={() => setView("buyer-dashboard")}
               className="px-6 py-3 rounded border border-emerald-400 text-emerald-200 text-base font-medium hover:bg-emerald-800 transition-colors">
               Buyer Portal
             </button>
