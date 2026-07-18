@@ -1,18 +1,5 @@
-import { useState, useRef } from "react";
-import {
-  BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-} from "recharts";
-import {
-  Package, ShoppingCart, FileText, CreditCard, MessageCircle, Bell, ChevronDown,
-  Menu, X, Home, Users, Settings, LogOut, TrendingUp, Check, Clock, AlertCircle,
-  Upload, Download, Eye, Search, Filter, ChevronRight, Star, Leaf, Globe,
-  Phone, Mail, MapPin, ArrowRight, BarChart2, Shield, Truck, Plus,
-  CheckCircle, XCircle, Send, Paperclip, MoreVertical, Edit2, Trash2,
-  FileDown, Printer, RefreshCw, ChevronUp, DollarSign, Archive,
-} from "lucide-react";
-import type { View, Portal } from "../../types";
-import { products, orders, buyers, revenueData, activityFeed, chatMessages, statusColors } from "../../data";
-import { Badge, Btn, Card, StatCard, Toast, ChatWidget } from "../../components/shared";
+import { Download, FileDown, RefreshCw } from "lucide-react";
+import { Badge, Btn, Card } from "../../components/shared";
 
 export function AdminReports({ showToast }: { showToast: (m: string, t: "success" | "error" | "info") => void }) {
   return (
@@ -91,24 +78,3 @@ export function AdminReports({ showToast }: { showToast: (m: string, t: "success
     </div>
   );
 }
-
-// ─── Portal Title Map ─────────────────────────────────────────────────────────
-
-const portalTitles: Record<string, string> = {
-  "buyer-dashboard": "Dashboard",
-  "buyer-catalog": "Product Catalog",
-  "buyer-order-form": "New Bulk Order",
-  "buyer-tracking": "Order Tracking",
-  "buyer-quotations": "Quotations & Invoices",
-  "buyer-payment": "Payment Upload",
-  "admin-dashboard": "Dashboard",
-  "admin-buyers": "Buyer Management",
-  "admin-products": "Product Management",
-  "admin-orders": "Order Approvals",
-  "admin-payments": "Payment Verification",
-  "admin-reports": "Reports",
-};
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// ROOT APP
-// ═══════════════════════════════════════════════════════════════════════════════

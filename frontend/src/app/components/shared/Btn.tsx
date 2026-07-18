@@ -1,20 +1,7 @@
-import { useState, useRef } from "react";
-import {
-  BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-} from "recharts";
-import {
-  Package, ShoppingCart, FileText, CreditCard, MessageCircle, Bell, ChevronDown,
-  Menu, X, Home, Users, Settings, LogOut, TrendingUp, Check, Clock, AlertCircle,
-  Upload, Download, Eye, Search, Filter, ChevronRight, Star, Leaf, Globe,
-  Phone, Mail, MapPin, ArrowRight, BarChart2, Shield, Truck, Plus,
-  CheckCircle, XCircle, Send, Paperclip, MoreVertical, Edit2, Trash2,
-  FileDown, Printer, RefreshCw, ChevronUp, DollarSign, Archive,
-} from "lucide-react";
-import type { View, Portal } from "../../types";
-import { products, orders, buyers, revenueData, activityFeed, chatMessages, statusColors } from "../../data";
+import type { ReactNode } from "react";
 
 export function Btn({ children, variant = "primary", size = "md", onClick, className = "" }: {
-  children: React.ReactNode; variant?: "primary" | "secondary" | "ghost" | "accent" | "danger";
+  children: ReactNode; variant?: "primary" | "secondary" | "ghost" | "accent" | "danger";
   size?: "sm" | "md" | "lg"; onClick?: () => void; className?: string;
 }) {
   const base = "inline-flex items-center gap-1.5 font-medium rounded transition-all duration-150 cursor-pointer";

@@ -1,22 +1,11 @@
-import { useState, useRef } from "react";
-import {
-  BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-} from "recharts";
-import {
-  Package, ShoppingCart, FileText, CreditCard, MessageCircle, Bell, ChevronDown,
-  Menu, X, Home, Users, Settings, LogOut, TrendingUp, Check, Clock, AlertCircle,
-  Upload, Download, Eye, Search, Filter, ChevronRight, Star, Leaf, Globe,
-  Phone, Mail, MapPin, ArrowRight, BarChart2, Shield, Truck, Plus,
-  CheckCircle, XCircle, Send, Paperclip, MoreVertical, Edit2, Trash2,
-  FileDown, Printer, RefreshCw, ChevronUp, DollarSign, Archive,
-} from "lucide-react";
-import type { View, Portal } from "../../types";
-import { products, orders, buyers, revenueData, activityFeed, chatMessages, statusColors } from "../../data";
-import { Badge, Btn, Card, StatCard, Toast, ChatWidget } from "../../components/shared";
+import { useState } from "react";
+import type { FormEvent } from "react";
+import { Clock, Phone, Mail, MapPin, CheckCircle, Send } from "lucide-react";
+import { Btn, Card } from "../../components/shared";
 
 export function ContactView({ showToast }: { showToast: (m: string, t: "success" | "error" | "info") => void }) {
   const [sent, setSent] = useState(false);
-  const submit = (e: React.FormEvent) => {
+  const submit = (e: FormEvent) => {
     e.preventDefault();
     setSent(true);
     showToast("Inquiry submitted! We'll respond within 24 hours.", "success");
@@ -94,7 +83,3 @@ export function ContactView({ showToast }: { showToast: (m: string, t: "success"
     </div>
   );
 }
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// BUYER PORTAL
-// ═══════════════════════════════════════════════════════════════════════════════

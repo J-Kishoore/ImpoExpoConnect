@@ -1,18 +1,8 @@
-import { useState, useRef } from "react";
-import {
-  BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-} from "recharts";
-import {
-  Package, ShoppingCart, FileText, CreditCard, MessageCircle, Bell, ChevronDown,
-  Menu, X, Home, Users, Settings, LogOut, TrendingUp, Check, Clock, AlertCircle,
-  Upload, Download, Eye, Search, Filter, ChevronRight, Star, Leaf, Globe,
-  Phone, Mail, MapPin, ArrowRight, BarChart2, Shield, Truck, Plus,
-  CheckCircle, XCircle, Send, Paperclip, MoreVertical, Edit2, Trash2,
-  FileDown, Printer, RefreshCw, ChevronUp, DollarSign, Archive,
-} from "lucide-react";
-import type { View, Portal } from "../../types";
-import { products, orders, buyers, revenueData, activityFeed, chatMessages, statusColors } from "../../data";
-import { Badge, Btn, Card, StatCard, Toast, ChatWidget } from "../../components/shared";
+import { Package, ShoppingCart, FileText, CreditCard, Bell, ChevronRight, ArrowRight, Truck, Plus, CheckCircle } from "lucide-react";
+import type { ElementType } from "react";
+import type { View } from "../../types";
+import { orders, activityFeed } from "../../data";
+import { Badge, Btn, Card, StatCard } from "../../components/shared";
 
 export function BuyerDashboard({ setView }: { setView: (v: View) => void }) {
   return (
@@ -61,7 +51,7 @@ export function BuyerDashboard({ setView }: { setView: (v: View) => void }) {
             <h3 className="font-semibold text-sm text-foreground mb-4">Activity</h3>
             <div className="space-y-4">
               {activityFeed.map(a => {
-                const icons: Record<string, React.ElementType> = { quote: FileText, payment: CreditCard, order: ShoppingCart, shipped: Truck };
+                const icons: Record<string, ElementType> = { quote: FileText, payment: CreditCard, order: ShoppingCart, shipped: Truck };
                 const Icon = icons[a.type] || Bell;
                 return (
                   <div key={a.id} className="flex gap-3">
