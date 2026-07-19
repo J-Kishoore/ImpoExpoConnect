@@ -163,7 +163,7 @@ function EditProductModal({ product, categories, token, onClose, onSaved, showTo
           </div>
           <div>
             <label className="block text-xs font-medium text-foreground mb-1.5">Price</label>
-            <input required placeholder="e.g. ₹58,000 / MT" value={price} onChange={e => setPrice(e.target.value)}
+            <input required placeholder="e.g. $58,000 / MT" value={price} onChange={e => setPrice(e.target.value)}
               className="w-full px-3 py-2 rounded-lg bg-input-background border border-border text-sm outline-none focus:ring-2 focus:ring-[#1e5c3a]/30" />
           </div>
           <div className="flex gap-2 pt-2">

@@ -13,12 +13,12 @@ export function AdminDashboard() {
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard icon={ShoppingCart} label="Total Orders" value="147" sub="+12 this week" color="green" />
         <StatCard icon={Clock} label="Pending Approvals" value="8" sub="Needs action" color="amber" />
-        <StatCard icon={DollarSign} label="Revenue (Jun)" value="₹84L" sub="↑ 18% vs May" color="blue" />
+        <StatCard icon={DollarSign} label="Revenue (Jun)" value="$8.4M" sub="↑ 18% vs May" color="blue" />
         <StatCard icon={Users} label="Active Buyers" value="42" sub="3 new this month" color="slate" />
       </div>
       <div className="grid lg:grid-cols-2 gap-6">
         <Card className="p-5">
-          <h3 className="font-semibold text-sm text-foreground mb-4">Monthly Revenue (₹ Lakh)</h3>
+          <h3 className="font-semibold text-sm text-foreground mb-4">Monthly Revenue ($ Million)</h3>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={revenueData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e5e1d8" />

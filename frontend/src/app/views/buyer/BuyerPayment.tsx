@@ -31,7 +31,7 @@ export function BuyerPayment({ showToast }: { showToast: (m: string, t: "success
           <AlertCircle size={16} className="text-amber-600 mt-0.5 flex-shrink-0" />
           <div>
             <p className="text-sm font-medium text-amber-900">Payment due for ORD-2024-0041</p>
-            <p className="text-xs text-amber-700 mt-0.5">Invoice INV-2024-041 · ₹5,80,000 · Due by 20 Jun 2024</p>
+            <p className="text-xs text-amber-700 mt-0.5">Invoice INV-2024-041 · $580,000 · Due by 20 Jun 2024</p>
           </div>
         </div>
         <div>
@@ -43,7 +43,7 @@ export function BuyerPayment({ showToast }: { showToast: (m: string, t: "success
               { l: "Account No.", v: "50100441200123" },
               { l: "IFSC", v: "HDFC0000234" },
               { l: "SWIFT", v: "HDFCINBB" },
-              { l: "Amount", v: "₹5,80,000" },
+              { l: "Amount", v: "$580,000" },
             ].map(d => (
               <div key={d.l} className="bg-[#f6f4f0] rounded p-2.5">
                 <p className="text-[10px] text-muted-foreground">{d.l}</p>
@@ -81,8 +81,8 @@ export function BuyerPayment({ showToast }: { showToast: (m: string, t: "success
         <h3 className="text-sm font-semibold text-foreground mb-3">Payment History</h3>
         <div className="space-y-2">
           {[
-            { id: "PAY-035", order: "ORD-2024-0035", amount: "₹2,60,000", date: "04 Jun 2024", status: "Approved" },
-            { id: "PAY-031", order: "ORD-2024-0031", amount: "₹1,56,000", date: "30 May 2024", status: "Approved" },
+            { id: "PAY-035", order: "ORD-2024-0035", amount: "$260,000", date: "04 Jun 2024", status: "Approved" },
+            { id: "PAY-031", order: "ORD-2024-0031", amount: "$156,000", date: "30 May 2024", status: "Approved" },
           ].map(p => (
             <div key={p.id} className="flex items-center justify-between p-3 rounded-lg bg-[#f6f4f0]">
               <div>

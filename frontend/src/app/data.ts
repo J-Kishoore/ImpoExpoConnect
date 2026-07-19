@@ -1,10 +1,10 @@
 export const products = [
-  { id: 1, name: "Basmati Rice", category: "Grains", unit: "MT", price: "₹58,000", minOrder: "5 MT", stock: "Available", img: "photo-1586201375761-83865001e31c" },
-  { id: 2, name: "Red Onions", category: "Vegetables", unit: "MT", price: "₹22,000", minOrder: "2 MT", stock: "Available", img: "photo-1508747703725-719777637510" },
-  { id: 3, name: "Wheat Flour (Atta)", category: "Processed", unit: "MT", price: "₹32,500", minOrder: "3 MT", stock: "Available", img: "photo-1574323347407-f5e1ad6d020b" },
-  { id: 4, name: "Green Gram (Moong)", category: "Pulses", unit: "MT", price: "₹78,000", minOrder: "2 MT", stock: "Limited", img: "photo-1556228453-efd6c1ff04f6" },
-  { id: 5, name: "Toor Dal", category: "Pulses", unit: "MT", price: "₹92,000", minOrder: "1 MT", stock: "Available", img: "photo-1607305387299-a3d9611cd469" },
-  { id: 6, name: "Maize / Corn", category: "Grains", unit: "MT", price: "₹19,000", minOrder: "10 MT", stock: "Available", img: "photo-1601593768799-76b6a3780a73" },
+  { id: 1, name: "Basmati Rice", category: "Grains", unit: "MT", price: "$58,000", minOrder: "5 MT", stock: "Available", img: "photo-1586201375761-83865001e31c" },
+  { id: 2, name: "Red Onions", category: "Vegetables", unit: "MT", price: "$22,000", minOrder: "2 MT", stock: "Available", img: "photo-1508747703725-719777637510" },
+  { id: 3, name: "Wheat Flour (Atta)", category: "Processed", unit: "MT", price: "$32,500", minOrder: "3 MT", stock: "Available", img: "photo-1574323347407-f5e1ad6d020b" },
+  { id: 4, name: "Green Gram (Moong)", category: "Pulses", unit: "MT", price: "$78,000", minOrder: "2 MT", stock: "Limited", img: "photo-1556228453-efd6c1ff04f6" },
+  { id: 5, name: "Toor Dal", category: "Pulses", unit: "MT", price: "$92,000", minOrder: "1 MT", stock: "Available", img: "photo-1607305387299-a3d9611cd469" },
+  { id: 6, name: "Maize / Corn", category: "Grains", unit: "MT", price: "$19,000", minOrder: "10 MT", stock: "Available", img: "photo-1601593768799-76b6a3780a73" },
 ];
 
 export const orders = [
@@ -41,7 +41,7 @@ export const activityFeed = [
 export const chatMessages = [
   { id: 1, from: "assistant", text: "Hello! I'm your ImpoExpo Connect assistant. How can I help with your order today?", time: "10:02" },
   { id: 2, from: "user", text: "What's the current price for Basmati Rice (Grade A)?", time: "10:04" },
-  { id: 3, from: "assistant", text: "Our Basmati Rice (Grade A) is currently priced at ₹58,000 per metric tonne. Minimum order is 5 MT. Would you like to request a bulk quotation?", time: "10:04" },
+  { id: 3, from: "assistant", text: "Our Basmati Rice (Grade A) is currently priced at $58,000 per metric tonne. Minimum order is 5 MT. Would you like to request a bulk quotation?", time: "10:04" },
 ];
 
 // ─── Utility Components ───────────────────────────────────────────────────────

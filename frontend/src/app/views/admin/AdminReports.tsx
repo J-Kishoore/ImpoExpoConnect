@@ -57,10 +57,10 @@ export function AdminReports({ showToast }: { showToast: (m: string, t: "success
             </thead>
             <tbody className="divide-y divide-border">
               {[
-                { id: "ORD-2024-0041", buyer: "Al Fajr Trading", product: "Basmati Rice", vol: "10 MT", value: "₹5,80,000", status: "In Progress" },
-                { id: "ORD-2024-0038", buyer: "Nile Foods Co.", product: "Red Onions", vol: "5 MT", value: "₹1,10,000", status: "Quoted" },
-                { id: "ORD-2024-0035", buyer: "Al Fajr Trading", product: "Wheat Flour", vol: "8 MT", value: "₹2,60,000", status: "Completed" },
-                { id: "ORD-2024-0031", buyer: "Gulf Commodity Hub", product: "Green Gram", vol: "2 MT", value: "₹1,56,000", status: "Approved" },
+                { id: "ORD-2024-0041", buyer: "Al Fajr Trading", product: "Basmati Rice", vol: "10 MT", value: "$580,000", status: "In Progress" },
+                { id: "ORD-2024-0038", buyer: "Nile Foods Co.", product: "Red Onions", vol: "5 MT", value: "$110,000", status: "Quoted" },
+                { id: "ORD-2024-0035", buyer: "Al Fajr Trading", product: "Wheat Flour", vol: "8 MT", value: "$260,000", status: "Completed" },
+                { id: "ORD-2024-0031", buyer: "Gulf Commodity Hub", product: "Green Gram", vol: "2 MT", value: "$156,000", status: "Approved" },
               ].map(r => (
                 <tr key={r.id} className="hover:bg-[#faf9f7] transition-colors">
                   <td className="px-4 py-3 font-mono text-xs font-medium text-foreground">{r.id}</td>

@@ -132,7 +132,7 @@ export function AdminOrders({ showToast }: { showToast: (m: string, t: "success"
                   <form onSubmit={sendQuote} className="mb-5 p-3 bg-[#f6f4f0] rounded-lg space-y-2">
                     <p className="text-xs font-medium text-foreground mb-1.5">Send Quotation</p>
                     <input required value={quoteAmount} onChange={e => setQuoteAmount(e.target.value)}
-                      placeholder="Quoted amount, e.g. ₹5,80,000"
+                      placeholder="Quoted amount, e.g. $580,000"
                       className="w-full px-3 py-2 rounded-lg bg-white border border-border text-sm outline-none focus:ring-2 focus:ring-[#1e5c3a]/30" />
                     <textarea rows={2} value={quoteNote} onChange={e => setQuoteNote(e.target.value)}
                       placeholder="Delivery timeline, terms, notes..."

@@ -3,9 +3,9 @@ import { Badge, Btn, Card } from "../../components/shared";
 
 export function AdminPayments({ showToast }: { showToast: (m: string, t: "success" | "error" | "info") => void }) {
   const payments = [
-    { id: "PAY-041", order: "ORD-2024-0041", buyer: "Al Fajr Trading LLC", amount: "₹5,80,000", date: "11 Jun 2024", status: "Pending", file: "transfer_proof_jun11.pdf" },
-    { id: "PAY-038", order: "ORD-2024-0038", buyer: "Nile Foods Co.", amount: "₹1,10,000", date: "09 Jun 2024", status: "Approved", file: "payment_nile_jun09.pdf" },
-    { id: "PAY-035", order: "ORD-2024-0035", buyer: "Al Fajr Trading LLC", amount: "₹2,60,000", date: "04 Jun 2024", status: "Approved", file: "receipt_035.pdf" },
+    { id: "PAY-041", order: "ORD-2024-0041", buyer: "Al Fajr Trading LLC", amount: "$580,000", date: "11 Jun 2024", status: "Pending", file: "transfer_proof_jun11.pdf" },
+    { id: "PAY-038", order: "ORD-2024-0038", buyer: "Nile Foods Co.", amount: "$110,000", date: "09 Jun 2024", status: "Approved", file: "payment_nile_jun09.pdf" },
+    { id: "PAY-035", order: "ORD-2024-0035", buyer: "Al Fajr Trading LLC", amount: "$260,000", date: "04 Jun 2024", status: "Approved", file: "receipt_035.pdf" },
   ];
   return (
     <div className="space-y-5">
