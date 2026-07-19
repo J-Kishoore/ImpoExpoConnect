@@ -81,9 +81,9 @@ function AppShell() {
       case "buyer-register":
         return auth.role === "buyer" ? <BuyerDashboard setView={setView} /> : <BuyerRegister setView={setView} showToast={showToast} />;
       case "buyer-dashboard": return <BuyerDashboard setView={setView} />;
-      case "buyer-catalog": return <BuyerCatalog setView={setView} />;
+      case "buyer-catalog": return <BuyerCatalog setView={setView} showToast={showToast} />;
       case "buyer-order-form": return <BuyerOrderForm showToast={showToast} />;
-      case "buyer-tracking": return <BuyerTracking />;
+      case "buyer-tracking": return <BuyerTracking showToast={showToast} />;
       case "buyer-quotations": return <BuyerQuotations showToast={showToast} />;
       case "buyer-payment": return <BuyerPayment showToast={showToast} />;
 

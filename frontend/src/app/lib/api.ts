@@ -120,12 +120,11 @@ export type Product = {
   name: string;
   categoryId: string;
   minOrder: string;
-  qty: number;
   price: string;
   createdAt: string;
 };
 
-export type ProductPayload = { name: string; categoryId: string; minOrder: string; qty: number; price: string };
+export type ProductPayload = { name: string; categoryId: string; minOrder: string; price: string };
 export type ProductUpdatePayload = Partial<ProductPayload>;
 
 type CategoryListResponse = { success: true; categories: Category[] };
@@ -166,4 +165,65 @@ export function updateProduct(token: string, id: string, payload: ProductUpdateP
 
 export function deleteProduct(token: string, id: string) {
   return apiFetch<ProductDeleteResponse>(`/admin/products/${id}`, { method: "DELETE" }, token);
+}
+
+export type PublicProduct = Product & { categoryName: string };
+
+export function getProducts() {
+  return apiFetch<{ success: true; products: PublicProduct[] }>("/products", { method: "GET" });
+}
+
+export type OrderStatus = "Requested" | "Quoted" | "Approved" | "In Progress" | "Delayed" | "Completed" | "Rejected";
+
+export type Order = {
+  id: string;
+  orderCode: string;
+  buyerId: string;
+  buyerCompanyName: string;
+  productId: string;
+  productName: string;
+  unitPrice: string;
+  qty: number;
+  deliveryPort: string | null;
+  shipmentDate: string | null;
+  tradeTerm: string | null;
+  qualitySpec: string | null;
+  notes: string | null;
+  status: OrderStatus;
+  quotedAmount: string | null;
+  quotedNote: string | null;
+  quotedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type OrderCreatePayload = {
+  productId: string;
+  qty: number;
+  deliveryPort?: string;
+  shipmentDate?: string;
+  tradeTerm?: string;
+  qualitySpec?: string;
+  notes?: string;
+};
+
+export type OrderStatusUpdatePayload = { status: OrderStatus; quotedAmount?: string; quotedNote?: string };
+
+type OrderListResponse = { success: true; orders: Order[] };
+type OrderMutateResponse = { success: true; order: Order };
+
+export function createOrder(token: string, payload: OrderCreatePayload) {
+  return apiFetch<OrderMutateResponse>("/buyer/orders", { method: "POST", body: JSON.stringify(payload) }, token);
+}
+
+export function listMyOrders(token: string) {
+  return apiFetch<OrderListResponse>("/buyer/orders", { method: "GET" }, token);
+}
+
+export function listAllOrders(token: string) {
+  return apiFetch<OrderListResponse>("/admin/orders", { method: "GET" }, token);
+}
+
+export function updateOrderStatus(token: string, id: string, payload: OrderStatusUpdatePayload) {
+  return apiFetch<OrderMutateResponse>(`/admin/orders/${id}`, { method: "PATCH", body: JSON.stringify(payload) }, token);
 }

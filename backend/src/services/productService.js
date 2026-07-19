@@ -3,7 +3,7 @@ const { ApiError } = require("../utils/ApiError");
 
 const PRODUCTS = "products";
 const CATEGORIES = "categories";
-const EDITABLE_FIELDS = ["name", "categoryId", "minOrder", "qty", "price"];
+const EDITABLE_FIELDS = ["name", "categoryId", "minOrder", "price"];
 
 function toPublic(id, data) {
   return { id, ...data };
@@ -14,29 +14,28 @@ async function assertCategoryExists(categoryId) {
   if (!doc.exists) throw new ApiError(400, "categoryId does not reference an existing category.");
 }
 
-function parseQty(value) {
-  const qty = Number(value);
-  if (!Number.isFinite(qty) || qty < 0) throw new ApiError(400, "qty must be a non-negative number.");
-  return qty;
-}
-
 async function listProducts() {
-  const snap = await db.collection(PRODUCTS).orderBy("name", "asc").get();
-  return snap.docs.map((doc) => toPublic(doc.id, doc.data()));
+  const [productsSnap, categoriesSnap] = await Promise.all([
+    db.collection(PRODUCTS).orderBy("name", "asc").get(),
+    db.collection(CATEGORIES).get(),
+  ]);
+  const categoryNames = new Map(categoriesSnap.docs.map((doc) => [doc.id, doc.data().name]));
+  return productsSnap.docs.map((doc) => {
+    const data = doc.data();
+    return { ...toPublic(doc.id, data), categoryName: categoryNames.get(data.categoryId) || "Uncategorized" };
+  });
 }
 
-async function createProduct({ name, categoryId, minOrder, qty, price }) {
+async function createProduct({ name, categoryId, minOrder, price }) {
   if (!name || !categoryId || !minOrder || price === undefined || price === null || price === "") {
     throw new ApiError(400, "name, categoryId, minOrder and price are required.");
   }
-  const qtyNum = parseQty(qty);
   await assertCategoryExists(categoryId);
 
   const docRef = await db.collection(PRODUCTS).add({
     name: String(name).trim(),
     categoryId,
     minOrder: String(minOrder).trim(),
-    qty: qtyNum,
     price: String(price).trim(),
     createdAt: new Date().toISOString(),
   });
@@ -56,7 +55,6 @@ async function updateProduct(id, updates) {
   }
 
   if (patch.categoryId) await assertCategoryExists(patch.categoryId);
-  if (patch.qty !== undefined) patch.qty = parseQty(patch.qty);
   if (patch.name) patch.name = String(patch.name).trim();
   if (patch.minOrder) patch.minOrder = String(patch.minOrder).trim();
   if (patch.price) patch.price = String(patch.price).trim();

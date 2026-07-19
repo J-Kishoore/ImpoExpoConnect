@@ -1,18 +1,12 @@
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { Plus, Edit2, Trash2, X } from "lucide-react";
-import { Badge, Btn, Card } from "../../components/shared";
+import { Btn, Card } from "../../components/shared";
 import { useAuth } from "../../context/AuthContext";
 import {
   ApiError, createProduct, deleteProduct, listCategories, listProducts, updateProduct,
 } from "../../lib/api";
 import type { Category, Product } from "../../lib/api";
-
-function stockLabel(qty: number): string {
-  if (qty <= 0) return "Out of Stock";
-  if (qty < 10) return "Limited";
-  return "Available";
-}
 
 export function AdminProducts({ showToast }: { showToast: (m: string, t: "success" | "error" | "info") => void }) {
   const { token } = useAuth();
@@ -55,7 +49,7 @@ export function AdminProducts({ showToast }: { showToast: (m: string, t: "succes
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h2 className="text-xl font-semibold text-foreground" style={{ fontFamily: "Fraunces, serif" }}>Product Management</h2>
-          <p className="text-sm text-muted-foreground">Manage catalog items and stock.</p>
+          <p className="text-sm text-muted-foreground">Manage catalog items.</p>
         </div>
         <Btn variant="primary" size="sm" disabled={categories.length === 0} onClick={() => setEditing("new")}>
           <Plus size={14} /> Add Product
@@ -74,16 +68,12 @@ export function AdminProducts({ showToast }: { showToast: (m: string, t: "succes
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {products.map(p => (
             <Card key={p.id} className="p-4">
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <h3 className="font-semibold text-foreground text-sm">{p.name}</h3>
-                  <p className="text-xs text-muted-foreground">{categoryName(p.categoryId)}</p>
-                </div>
-                <Badge label={stockLabel(p.qty)} />
+              <div className="mb-3">
+                <h3 className="font-semibold text-foreground text-sm">{p.name}</h3>
+                <p className="text-xs text-muted-foreground">{categoryName(p.categoryId)}</p>
               </div>
               <p className="text-sm font-semibold text-[#1e5c3a] mb-1" style={{ fontFamily: "JetBrains Mono, monospace" }}>{p.price}</p>
-              <p className="text-xs text-muted-foreground mb-1">Min order: {p.minOrder}</p>
-              <p className="text-xs text-muted-foreground mb-3">Qty in stock: {p.qty}</p>
+              <p className="text-xs text-muted-foreground mb-3">Min order: {p.minOrder}</p>
               <div className="flex gap-2">
                 <Btn variant="secondary" size="sm" disabled={busyId === p.id} className="flex-1 justify-center" onClick={() => setEditing(p)}>
                   <Edit2 size={12} /> Edit
@@ -129,7 +119,6 @@ function EditProductModal({ product, categories, token, onClose, onSaved, showTo
   const [name, setName] = useState(product?.name ?? "");
   const [categoryId, setCategoryId] = useState(product?.categoryId ?? categories[0]?.id ?? "");
   const [minOrder, setMinOrder] = useState(product?.minOrder ?? "");
-  const [qty, setQty] = useState(product ? String(product.qty) : "");
   const [price, setPrice] = useState(product?.price ?? "");
   const [saving, setSaving] = useState(false);
 
@@ -137,7 +126,7 @@ function EditProductModal({ product, categories, token, onClose, onSaved, showTo
     e.preventDefault();
     setSaving(true);
     try {
-      const payload = { name, categoryId, minOrder, qty: Number(qty), price };
+      const payload = { name, categoryId, minOrder, price };
       const res = product ? await updateProduct(token, product.id, payload) : await createProduct(token, payload);
       onSaved(res.product);
     } catch (err) {
@@ -167,17 +156,10 @@ function EditProductModal({ product, categories, token, onClose, onSaved, showTo
               {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-medium text-foreground mb-1.5">Min Order</label>
-              <input required placeholder="e.g. 5 MT" value={minOrder} onChange={e => setMinOrder(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg bg-input-background border border-border text-sm outline-none focus:ring-2 focus:ring-[#1e5c3a]/30" />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-foreground mb-1.5">Qty in Stock</label>
-              <input required type="number" min="0" value={qty} onChange={e => setQty(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg bg-input-background border border-border text-sm outline-none focus:ring-2 focus:ring-[#1e5c3a]/30" />
-            </div>
+          <div>
+            <label className="block text-xs font-medium text-foreground mb-1.5">Min Order</label>
+            <input required placeholder="e.g. 5 MT" value={minOrder} onChange={e => setMinOrder(e.target.value)}
+              className="w-full px-3 py-2 rounded-lg bg-input-background border border-border text-sm outline-none focus:ring-2 focus:ring-[#1e5c3a]/30" />
           </div>
           <div>
             <label className="block text-xs font-medium text-foreground mb-1.5">Price</label>
