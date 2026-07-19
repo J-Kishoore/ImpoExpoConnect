@@ -4,15 +4,31 @@ const { ApiError } = require("../utils/ApiError");
 const BUYERS = "buyers";
 const EDITABLE_FIELDS = ["companyName", "contactName", "email", "phone", "country", "status"];
 const VALID_STATUSES = ["Pending", "Active", "Suspended"];
+const DEFAULT_PAGE_SIZE = 10;
+const MAX_PAGE_SIZE = 50;
 
 function stripHash(id, data) {
   const { passwordHash, ...rest } = data;
   return { id, ...rest };
 }
 
-async function listBuyers() {
-  const snap = await db.collection(BUYERS).orderBy("createdAt", "desc").get();
-  return snap.docs.map((doc) => stripHash(doc.id, doc.data()));
+async function listBuyers({ limit, cursor } = {}) {
+  const pageSize = Math.min(Math.max(parseInt(limit, 10) || DEFAULT_PAGE_SIZE, 1), MAX_PAGE_SIZE);
+
+  // Firestore has no offset-based paging at scale, so we page by cursoring on the
+  // orderBy field itself (createdAt) and over-fetch by one row to detect a next page.
+  let query = db.collection(BUYERS).orderBy("createdAt", "desc").limit(pageSize + 1);
+  if (cursor) query = query.startAfter(cursor);
+
+  const snap = await query.get();
+  const hasMore = snap.docs.length > pageSize;
+  const pageDocs = hasMore ? snap.docs.slice(0, pageSize) : snap.docs;
+
+  return {
+    buyers: pageDocs.map((doc) => stripHash(doc.id, doc.data())),
+    nextCursor: hasMore ? pageDocs[pageDocs.length - 1].data().createdAt : null,
+    hasMore,
+  };
 }
 
 async function updateBuyer(id, updates) {

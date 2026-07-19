@@ -89,12 +89,16 @@ export type BuyerUpdatePayload = Partial<
   Pick<BuyerProfile, "companyName" | "contactName" | "email" | "phone" | "country" | "status">
 >;
 
-type BuyerListResponse = { success: true; buyers: BuyerProfile[] };
+type BuyerListResponse = { success: true; buyers: BuyerProfile[]; nextCursor: string | null; hasMore: boolean };
 type BuyerUpdateResponse = { success: true; buyer: BuyerProfile };
 type BuyerDeleteResponse = { success: true; id: string };
 
-export function listBuyers(token: string) {
-  return apiFetch<BuyerListResponse>("/admin/buyers", { method: "GET" }, token);
+export function listBuyers(token: string, opts: { limit?: number; cursor?: string | null } = {}) {
+  const params = new URLSearchParams();
+  if (opts.limit) params.set("limit", String(opts.limit));
+  if (opts.cursor) params.set("cursor", opts.cursor);
+  const qs = params.toString();
+  return apiFetch<BuyerListResponse>(`/admin/buyers${qs ? `?${qs}` : ""}`, { method: "GET" }, token);
 }
 
 export function updateBuyer(token: string, id: string, patch: BuyerUpdatePayload) {

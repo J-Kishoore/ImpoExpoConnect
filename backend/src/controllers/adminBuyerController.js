@@ -3,8 +3,9 @@ const { sendSuccess } = require("../utils/apiResponse");
 const buyerService = require("../services/buyerService");
 
 const listBuyers = asyncHandler(async (req, res) => {
-  const buyers = await buyerService.listBuyers();
-  sendSuccess(res, 200, { buyers });
+  const { limit, cursor } = req.query;
+  const result = await buyerService.listBuyers({ limit, cursor });
+  sendSuccess(res, 200, result);
 });
 
 const updateBuyer = asyncHandler(async (req, res) => {

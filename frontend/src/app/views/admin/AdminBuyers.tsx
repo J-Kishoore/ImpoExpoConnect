@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
-import { Search, CheckCircle, XCircle, Edit2, Trash2, X } from "lucide-react";
+import { Search, CheckCircle, XCircle, Edit2, Trash2, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Badge, Btn, Card } from "../../components/shared";
 import { useAuth } from "../../context/AuthContext";
 import { ApiError, deleteBuyer, listBuyers, updateBuyer } from "../../lib/api";
 import type { BuyerProfile } from "../../lib/api";
+
+const PAGE_SIZE = 10;
 
 export function AdminBuyers({ showToast }: { showToast: (m: string, t: "success" | "error" | "info") => void }) {
   const { token } = useAuth();
@@ -14,16 +16,29 @@ export function AdminBuyers({ showToast }: { showToast: (m: string, t: "success"
   const [editing, setEditing] = useState<BuyerProfile | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
 
+  // cursors[i] is the "cursor" query param used to fetch page i (cursors[0] is
+  // always null for page 1); grows lazily as the admin pages forward.
+  const [cursors, setCursors] = useState<(string | null)[]>([null]);
+  const [pageIndex, setPageIndex] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
+
   useEffect(() => {
     if (!token) return;
     let cancelled = false;
     setLoading(true);
-    listBuyers(token)
-      .then(res => { if (!cancelled) setBuyers(res.buyers); })
+    listBuyers(token, { limit: PAGE_SIZE, cursor: cursors[pageIndex] })
+      .then(res => {
+        if (cancelled) return;
+        setBuyers(res.buyers);
+        setHasMore(res.hasMore);
+        if (res.hasMore && res.nextCursor && cursors.length === pageIndex + 1) {
+          setCursors(prev => [...prev, res.nextCursor as string]);
+        }
+      })
       .catch(err => showToast(err instanceof ApiError ? err.message : "Failed to load buyers.", "error"))
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
-  }, [token]);
+  }, [token, pageIndex]);
 
   const filtered = buyers.filter(b =>
     b.companyName.toLowerCase().includes(search.toLowerCase()) || b.email.toLowerCase().includes(search.toLowerCase())
@@ -63,7 +78,7 @@ export function AdminBuyers({ showToast }: { showToast: (m: string, t: "success"
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h2 className="text-xl font-semibold text-foreground" style={{ fontFamily: "Fraunces, serif" }}>Buyer Management</h2>
-          <p className="text-sm text-muted-foreground">{buyers.length} registered buyers</p>
+          <p className="text-sm text-muted-foreground">Page {pageIndex + 1} · {buyers.length} shown</p>
         </div>
         <div className="flex items-center gap-2 bg-card rounded-lg border border-border px-3 py-2">
           <Search size={14} className="text-muted-foreground" />
@@ -128,6 +143,19 @@ export function AdminBuyers({ showToast }: { showToast: (m: string, t: "success"
           </div>
         )}
       </Card>
+      {(pageIndex > 0 || hasMore) && (
+        <div className="flex items-center justify-between px-1">
+          <p className="text-xs text-muted-foreground">Page {pageIndex + 1}</p>
+          <div className="flex gap-2">
+            <Btn variant="secondary" size="sm" disabled={pageIndex === 0 || loading} onClick={() => setPageIndex(i => i - 1)}>
+              <ChevronLeft size={14} /> Prev
+            </Btn>
+            <Btn variant="secondary" size="sm" disabled={!hasMore || loading} onClick={() => setPageIndex(i => i + 1)}>
+              Next <ChevronRight size={14} />
+            </Btn>
+          </div>
+        </div>
+      )}
       {editing && token && (
         <EditBuyerModal
           buyer={editing}
