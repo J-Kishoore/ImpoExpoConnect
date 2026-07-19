@@ -25,6 +25,19 @@ async function apiFetch<T>(path: string, options: RequestInit = {}, token?: stri
   return body as T;
 }
 
+async function apiFetchForm<T>(path: string, formData: FormData, token: string): Promise<T> {
+  const res = await fetch(`${API_BASE_URL}${path}`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: formData,
+  });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new ApiError(res.status, body.message || "Something went wrong. Please try again.");
+  }
+  return body as T;
+}
+
 export type BuyerProfile = {
   id: string;
   companyName: string;
@@ -226,4 +239,75 @@ export function listAllOrders(token: string) {
 
 export function updateOrderStatus(token: string, id: string, payload: OrderStatusUpdatePayload) {
   return apiFetch<OrderMutateResponse>(`/admin/orders/${id}`, { method: "PATCH", body: JSON.stringify(payload) }, token);
+}
+
+export type DashboardStats = {
+  totalOrders: number;
+  newOrdersThisWeek: number;
+  pendingApprovals: number;
+  completedRevenue: number;
+  activeBuyers: number;
+  newBuyersThisMonth: number;
+  monthlyRevenue: { month: string; revenue: number; orders: number }[];
+  topProducts: { productName: string; qty: number; pct: number }[];
+  pendingActions: { id: string; label: string; urgency: "high" | "medium"; time: string; target: "admin-orders" | "admin-buyers" }[];
+};
+
+export function getDashboardStats(token: string) {
+  return apiFetch<{ success: true; stats: DashboardStats }>("/admin/dashboard", { method: "GET" }, token);
+}
+
+export type PaymentStatus = "Pending" | "Approved" | "Declined";
+
+export type Payment = {
+  id: string;
+  orderId: string;
+  orderCode: string;
+  buyerId: string;
+  buyerCompanyName: string;
+  amount: string | null;
+  fileName: string;
+  mimeType: string;
+  fileSize: number;
+  status: PaymentStatus;
+  declineReason: string | null;
+  reviewedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+type PaymentListResponse = { success: true; payments: Payment[] };
+type PaymentMutateResponse = { success: true; payment: Payment };
+
+export function createPayment(token: string, orderId: string, file: File, amount?: string) {
+  const formData = new FormData();
+  formData.append("orderId", orderId);
+  if (amount) formData.append("amount", amount);
+  formData.append("file", file);
+  return apiFetchForm<PaymentMutateResponse>("/buyer/payments", formData, token);
+}
+
+export function listMyPayments(token: string) {
+  return apiFetch<PaymentListResponse>("/buyer/payments", { method: "GET" }, token);
+}
+
+export function listAllPayments(token: string) {
+  return apiFetch<PaymentListResponse>("/admin/payments", { method: "GET" }, token);
+}
+
+export function reviewPayment(token: string, id: string, payload: { status: "Approved" | "Declined"; declineReason?: string }) {
+  return apiFetch<PaymentMutateResponse>(`/admin/payments/${id}`, { method: "PATCH", body: JSON.stringify(payload) }, token);
+}
+
+export async function fetchPaymentFileBlob(token: string, id: string): Promise<{ blob: Blob; fileName: string }> {
+  const res = await fetch(`${API_BASE_URL}/payments/${id}/file`, { headers: { Authorization: `Bearer ${token}` } });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new ApiError(res.status, body.message || "Failed to load file.");
+  }
+  const blob = await res.blob();
+  const disposition = res.headers.get("Content-Disposition") || "";
+  const match = disposition.match(/filename="?([^"]+)"?/);
+  const fileName = match ? decodeURIComponent(match[1]) : "payment-proof";
+  return { blob, fileName };
 }

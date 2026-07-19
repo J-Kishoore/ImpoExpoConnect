@@ -88,10 +88,10 @@ function AppShell() {
       case "buyer-payment": return <BuyerPayment showToast={showToast} />;
 
       case "admin-login":
-        return auth.role === "admin" ? <AdminDashboard /> : <AdminLogin setView={setView} showToast={showToast} />;
+        return auth.role === "admin" ? <AdminDashboard setView={setView} /> : <AdminLogin setView={setView} showToast={showToast} />;
       case "admin-register":
-        return auth.role === "admin" ? <AdminDashboard /> : <AdminRegister setView={setView} showToast={showToast} />;
-      case "admin-dashboard": return <AdminDashboard />;
+        return auth.role === "admin" ? <AdminDashboard setView={setView} /> : <AdminRegister setView={setView} showToast={showToast} />;
+      case "admin-dashboard": return <AdminDashboard setView={setView} />;
       case "admin-buyers": return <AdminBuyers showToast={showToast} />;
       case "admin-products": return <AdminProducts showToast={showToast} />;
       case "admin-categories": return <AdminCategories showToast={showToast} />;
