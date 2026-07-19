@@ -108,3 +108,62 @@ export function updateBuyer(token: string, id: string, patch: BuyerUpdatePayload
 export function deleteBuyer(token: string, id: string) {
   return apiFetch<BuyerDeleteResponse>(`/admin/buyers/${id}`, { method: "DELETE" }, token);
 }
+
+export type Category = {
+  id: string;
+  name: string;
+  createdAt: string;
+};
+
+export type Product = {
+  id: string;
+  name: string;
+  categoryId: string;
+  minOrder: string;
+  qty: number;
+  price: string;
+  createdAt: string;
+};
+
+export type ProductPayload = { name: string; categoryId: string; minOrder: string; qty: number; price: string };
+export type ProductUpdatePayload = Partial<ProductPayload>;
+
+type CategoryListResponse = { success: true; categories: Category[] };
+type CategoryMutateResponse = { success: true; category: Category };
+type CategoryDeleteResponse = { success: true; id: string };
+
+export function listCategories(token: string) {
+  return apiFetch<CategoryListResponse>("/admin/categories", { method: "GET" }, token);
+}
+
+export function createCategory(token: string, name: string) {
+  return apiFetch<CategoryMutateResponse>("/admin/categories", { method: "POST", body: JSON.stringify({ name }) }, token);
+}
+
+export function updateCategory(token: string, id: string, name: string) {
+  return apiFetch<CategoryMutateResponse>(`/admin/categories/${id}`, { method: "PATCH", body: JSON.stringify({ name }) }, token);
+}
+
+export function deleteCategory(token: string, id: string) {
+  return apiFetch<CategoryDeleteResponse>(`/admin/categories/${id}`, { method: "DELETE" }, token);
+}
+
+type ProductListResponse = { success: true; products: Product[] };
+type ProductMutateResponse = { success: true; product: Product };
+type ProductDeleteResponse = { success: true; id: string };
+
+export function listProducts(token: string) {
+  return apiFetch<ProductListResponse>("/admin/products", { method: "GET" }, token);
+}
+
+export function createProduct(token: string, payload: ProductPayload) {
+  return apiFetch<ProductMutateResponse>("/admin/products", { method: "POST", body: JSON.stringify(payload) }, token);
+}
+
+export function updateProduct(token: string, id: string, payload: ProductUpdatePayload) {
+  return apiFetch<ProductMutateResponse>(`/admin/products/${id}`, { method: "PATCH", body: JSON.stringify(payload) }, token);
+}
+
+export function deleteProduct(token: string, id: string) {
+  return apiFetch<ProductDeleteResponse>(`/admin/products/${id}`, { method: "DELETE" }, token);
+}

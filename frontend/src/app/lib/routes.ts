@@ -20,6 +20,7 @@ export const VIEW_TO_PATH: Record<View, string> = {
   "admin-dashboard": "/admin/dashboard",
   "admin-buyers": "/admin/buyers",
   "admin-products": "/admin/products",
+  "admin-categories": "/admin/categories",
   "admin-orders": "/admin/orders",
   "admin-payments": "/admin/payments",
   "admin-reports": "/admin/reports",

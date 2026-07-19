@@ -4,5 +4,5 @@ export type View =
   | "buyer-dashboard" | "buyer-catalog" | "buyer-order-form" | "buyer-tracking"
   | "buyer-quotations" | "buyer-payment"
   | "admin-login" | "admin-register"
-  | "admin-dashboard" | "admin-buyers" | "admin-products" | "admin-orders"
+  | "admin-dashboard" | "admin-buyers" | "admin-products" | "admin-categories" | "admin-orders"
   | "admin-payments" | "admin-reports";

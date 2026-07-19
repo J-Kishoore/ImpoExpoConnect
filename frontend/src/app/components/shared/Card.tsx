@@ -1,8 +1,8 @@
-import type { ReactNode } from "react";
+import type { HTMLAttributes, ReactNode } from "react";
 
-export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
+export function Card({ children, className = "", ...rest }: HTMLAttributes<HTMLDivElement> & { children: ReactNode; className?: string }) {
   return (
-    <div className={`bg-card rounded-lg border border-border shadow-sm ${className}`}>
+    <div className={`bg-card rounded-lg border border-border shadow-sm ${className}`} {...rest}>
       {children}
     </div>
   );

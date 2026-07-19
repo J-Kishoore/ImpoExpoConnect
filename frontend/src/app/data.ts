@@ -70,6 +70,7 @@ export const portalTitles: Record<string, string> = {
   "admin-dashboard": "Dashboard",
   "admin-buyers": "Buyer Management",
   "admin-products": "Product Management",
+  "admin-categories": "Category Management",
   "admin-orders": "Order Approvals",
   "admin-payments": "Payment Verification",
   "admin-reports": "Reports",

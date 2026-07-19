@@ -1,4 +1,4 @@
-import { Package, ShoppingCart, FileText, CreditCard, Menu, Home, Users, LogOut, ChevronRight, Leaf, Globe, BarChart2, Truck } from "lucide-react";
+import { Package, ShoppingCart, FileText, CreditCard, Menu, Home, Users, LogOut, ChevronRight, Leaf, Globe, BarChart2, Truck, Tag } from "lucide-react";
 import type { ElementType } from "react";
 import type { View } from "../../types";
 import { useAuth } from "../../context/AuthContext";
@@ -23,6 +23,7 @@ export function Sidebar({ view, setView, collapsed, setCollapsed }: {
     { icon: BarChart2, label: "Dashboard", view: "admin-dashboard" },
     { icon: Users, label: "Buyers", view: "admin-buyers" },
     { icon: Package, label: "Products", view: "admin-products" },
+    { icon: Tag, label: "Categories", view: "admin-categories" },
     { icon: ShoppingCart, label: "Orders", view: "admin-orders" },
     { icon: CreditCard, label: "Payments", view: "admin-payments" },
     { icon: FileText, label: "Reports", view: "admin-reports" },

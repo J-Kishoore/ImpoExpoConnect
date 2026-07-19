@@ -12,7 +12,7 @@ import {
 } from "./views/buyer";
 import {
   AdminLogin, AdminRegister,
-  AdminDashboard, AdminBuyers, AdminProducts, AdminOrders, AdminPayments, AdminReports,
+  AdminDashboard, AdminBuyers, AdminProducts, AdminCategories, AdminOrders, AdminPayments, AdminReports,
 } from "./views/admin";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 
@@ -20,7 +20,7 @@ const BUYER_VIEWS = new Set<View>([
   "buyer-dashboard", "buyer-catalog", "buyer-order-form", "buyer-tracking", "buyer-quotations", "buyer-payment",
 ]);
 const ADMIN_VIEWS = new Set<View>([
-  "admin-dashboard", "admin-buyers", "admin-products", "admin-orders", "admin-payments", "admin-reports",
+  "admin-dashboard", "admin-buyers", "admin-products", "admin-categories", "admin-orders", "admin-payments", "admin-reports",
 ]);
 
 function NotFound({ setView }: { setView: (v: View) => void }) {
@@ -94,6 +94,7 @@ function AppShell() {
       case "admin-dashboard": return <AdminDashboard />;
       case "admin-buyers": return <AdminBuyers showToast={showToast} />;
       case "admin-products": return <AdminProducts showToast={showToast} />;
+      case "admin-categories": return <AdminCategories showToast={showToast} />;
       case "admin-orders": return <AdminOrders showToast={showToast} />;
       case "admin-payments": return <AdminPayments showToast={showToast} />;
       case "admin-reports": return <AdminReports showToast={showToast} />;
