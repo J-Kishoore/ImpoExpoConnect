@@ -14,13 +14,17 @@ import {
   AdminLogin, AdminRegister,
   AdminDashboard, AdminBuyers, AdminProducts, AdminCategories, AdminOrders, AdminPayments, AdminReports,
 } from "./views/admin";
+import { NotificationsView } from "./views/notifications/NotificationsView";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { NotificationProvider } from "./context/NotificationContext";
 
 const BUYER_VIEWS = new Set<View>([
   "buyer-dashboard", "buyer-catalog", "buyer-order-form", "buyer-tracking", "buyer-quotations", "buyer-payment",
+  "buyer-notifications",
 ]);
 const ADMIN_VIEWS = new Set<View>([
   "admin-dashboard", "admin-buyers", "admin-products", "admin-categories", "admin-orders", "admin-payments", "admin-reports",
+  "admin-notifications",
 ]);
 
 function NotFound({ setView }: { setView: (v: View) => void }) {
@@ -86,6 +90,7 @@ function AppShell() {
       case "buyer-tracking": return <BuyerTracking showToast={showToast} />;
       case "buyer-quotations": return <BuyerQuotations showToast={showToast} />;
       case "buyer-payment": return <BuyerPayment showToast={showToast} />;
+      case "buyer-notifications": return <NotificationsView />;
 
       case "admin-login":
         return auth.role === "admin" ? <AdminDashboard setView={setView} /> : <AdminLogin setView={setView} showToast={showToast} />;
@@ -98,6 +103,7 @@ function AppShell() {
       case "admin-orders": return <AdminOrders showToast={showToast} />;
       case "admin-payments": return <AdminPayments showToast={showToast} />;
       case "admin-reports": return <AdminReports showToast={showToast} />;
+      case "admin-notifications": return <NotificationsView />;
 
       default: return null;
     }
@@ -133,7 +139,9 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <AppShell />
+        <NotificationProvider>
+          <AppShell />
+        </NotificationProvider>
       </AuthProvider>
     </BrowserRouter>
   );

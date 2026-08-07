@@ -70,6 +70,7 @@ export const portalTitles: Record<string, string> = {
   "buyer-tracking": "Order Tracking",
   "buyer-quotations": "Quotations & Invoices",
   "buyer-payment": "Payment Upload",
+  "buyer-notifications": "Notifications",
   "admin-dashboard": "Dashboard",
   "admin-buyers": "Buyer Management",
   "admin-products": "Product Management",
@@ -77,4 +78,5 @@ export const portalTitles: Record<string, string> = {
   "admin-orders": "Order Approvals",
   "admin-payments": "Payment Verification",
   "admin-reports": "Reports",
+  "admin-notifications": "Notifications",
 };

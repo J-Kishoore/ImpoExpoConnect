@@ -2,7 +2,7 @@ export type View =
   | "home" | "products" | "about" | "contact"
   | "buyer-login" | "buyer-register"
   | "buyer-dashboard" | "buyer-catalog" | "buyer-order-form" | "buyer-tracking"
-  | "buyer-quotations" | "buyer-payment"
+  | "buyer-quotations" | "buyer-payment" | "buyer-notifications"
   | "admin-login" | "admin-register"
   | "admin-dashboard" | "admin-buyers" | "admin-products" | "admin-categories" | "admin-orders"
-  | "admin-payments" | "admin-reports";
+  | "admin-payments" | "admin-reports" | "admin-notifications";

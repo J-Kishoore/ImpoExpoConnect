@@ -1,5 +1,6 @@
 const { db } = require("../config/firebase");
 const { ApiError } = require("../utils/ApiError");
+const notificationService = require("./notificationService");
 
 const ORDERS = "orders";
 const PRODUCTS = "products";
@@ -85,7 +86,16 @@ async function createOrder(buyerId, { productId, qty, deliveryPort, shipmentDate
   });
 
   const snap = await docRef.get();
-  return toPublic(docRef.id, snap.data());
+  const order = toPublic(docRef.id, snap.data());
+  await notificationService.create({
+    recipient: "admin:all",
+    type: "order_created",
+    title: "New order request",
+    body: `${order.orderCode} · ${product.name} · ${qtyNum} MT from ${buyer.companyName}.`,
+    data: { orderId: order.id, orderCode: order.orderCode, buyerId, productName: product.name },
+    link: "/admin/orders",
+  });
+  return order;
 }
 
 async function listOrdersForBuyer(buyerId) {
@@ -131,7 +141,29 @@ async function updateOrderStatus(id, { status, quotedAmount, quotedNote }) {
 
   await ref.update(patch);
   const updated = await ref.get();
-  return toPublic(updated.id, updated.data());
+  const order = toPublic(updated.id, updated.data());
+
+  const statusMeta = {
+    Quoted: { type: "order_quoted", title: `Quotation received for ${order.orderCode}`, body: `${order.productName} · ${order.qty} MT priced at ${patch.quotedAmount}.`, link: "/buyer/quotations" },
+    Approved: { type: "order_approved", title: `Order ${order.orderCode} approved`, body: `${order.productName} · ${order.qty} MT is moving forward.`, link: "/buyer/tracking" },
+    Rejected: { type: "order_rejected", title: `Order ${order.orderCode} rejected`, body: patch.quotedNote ? `${order.productName} · ${patch.quotedNote}` : `${order.productName} · ${order.qty} MT could not be accepted.`, link: "/buyer/tracking" },
+    "In Progress": { type: "order_in_progress", title: `Order ${order.orderCode} is in progress`, body: `${order.productName} · ${order.qty} MT is being prepared.`, link: "/buyer/tracking" },
+    Delayed: { type: "order_delayed", title: `Order ${order.orderCode} delayed`, body: patch.quotedNote ? `${order.productName} · ${patch.quotedNote}` : `${order.productName} · ${order.qty} MT is delayed.`, link: "/buyer/tracking" },
+    Completed: { type: "order_completed", title: `Order ${order.orderCode} completed`, body: `${order.productName} · ${order.qty} MT has been delivered.`, link: "/buyer/tracking" },
+  };
+  const meta = statusMeta[status];
+  if (meta && order.buyerId) {
+    await notificationService.create({
+      recipient: `buyer:${order.buyerId}`,
+      type: meta.type,
+      title: meta.title,
+      body: meta.body,
+      data: { orderId: order.id, orderCode: order.orderCode, status },
+      link: meta.link,
+    });
+  }
+
+  return order;
 }
 
 module.exports = { createOrder, listOrdersForBuyer, listAllOrders, updateOrderStatus, VALID_STATUSES };

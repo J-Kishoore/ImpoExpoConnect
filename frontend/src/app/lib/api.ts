@@ -311,3 +311,51 @@ export async function fetchPaymentFileBlob(token: string, id: string): Promise<{
   const fileName = match ? decodeURIComponent(match[1]) : "payment-proof";
   return { blob, fileName };
 }
+
+export type NotificationType =
+  | "buyer_registered"
+  | "order_created"
+  | "order_quoted"
+  | "order_approved"
+  | "order_rejected"
+  | "order_in_progress"
+  | "order_delayed"
+  | "order_completed"
+  | "payment_uploaded"
+  | "payment_approved"
+  | "payment_declined"
+  | "account_approved"
+  | "account_suspended";
+
+export type AppNotification = {
+  id: string;
+  type: NotificationType;
+  title: string;
+  body: string;
+  data: Record<string, string>;
+  link: string | null;
+  isRead: boolean;
+  createdAt: string;
+};
+
+type NotificationListResponse = { success: true; notifications: AppNotification[]; unreadCount: number };
+type UnreadCountResponse = { success: true; unreadCount: number };
+type NotificationReadResponse = { success: true; notification: AppNotification };
+type ReadAllResponse = { success: true; marked: number };
+
+export function listNotifications(token: string, limit?: number) {
+  const qs = limit ? `?limit=${limit}` : "";
+  return apiFetch<NotificationListResponse>(`/notifications${qs}`, { method: "GET" }, token);
+}
+
+export function getUnreadNotificationCount(token: string) {
+  return apiFetch<UnreadCountResponse>("/notifications/unread-count", { method: "GET" }, token);
+}
+
+export function markNotificationRead(token: string, id: string) {
+  return apiFetch<NotificationReadResponse>(`/notifications/${id}/read`, { method: "PATCH" }, token);
+}
+
+export function markAllNotificationsRead(token: string) {
+  return apiFetch<ReadAllResponse>("/notifications/read-all", { method: "PATCH" }, token);
+}

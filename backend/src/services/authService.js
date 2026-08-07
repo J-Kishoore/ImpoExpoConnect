@@ -2,6 +2,7 @@ const { db } = require("../config/firebase");
 const { hashPassword, comparePassword } = require("../utils/password");
 const { signToken } = require("../utils/jwt");
 const { ApiError } = require("../utils/ApiError");
+const notificationService = require("./notificationService");
 
 const BUYERS = "buyers";
 const ADMINS = "admins";
@@ -35,6 +36,14 @@ async function registerBuyer({ companyName, contactName, email, password, countr
   });
 
   const snap = await docRef.get();
+  await notificationService.create({
+    recipient: "admin:all",
+    type: "buyer_registered",
+    title: "New buyer registration",
+    body: `${companyName} (${country || "country not specified"}) signed up and is awaiting approval.`,
+    data: { buyerId: docRef.id, companyName, email: normalizedEmail },
+    link: "/admin/buyers",
+  });
   const token = signToken({ sub: docRef.id, role: "buyer", email: normalizedEmail });
   return { token, buyer: stripHash(docRef.id, snap.data()) };
 }

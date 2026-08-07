@@ -1,5 +1,6 @@
 const { db } = require("../config/firebase");
 const { ApiError } = require("../utils/ApiError");
+const notificationService = require("./notificationService");
 
 const BUYERS = "buyers";
 const EDITABLE_FIELDS = ["companyName", "contactName", "email", "phone", "country", "status"];
@@ -62,7 +63,23 @@ async function updateBuyer(id, updates) {
   patch.updatedAt = new Date().toISOString();
   await ref.update(patch);
   const updated = await ref.get();
-  return stripHash(updated.id, updated.data());
+  const buyer = stripHash(updated.id, updated.data());
+
+  if (patch.status && patch.status !== doc.data().status) {
+    const approved = patch.status === "Active";
+    await notificationService.create({
+      recipient: `buyer:${updated.id}`,
+      type: approved ? "account_approved" : "account_suspended",
+      title: approved ? "Your account has been approved" : "Your account has been suspended",
+      body: approved
+        ? "You can now place bulk orders and send payment proofs."
+        : "Contact support to restore access.",
+      data: { status: patch.status },
+      link: "/buyer/dashboard",
+    });
+  }
+
+  return buyer;
 }
 
 async function deleteBuyer(id) {

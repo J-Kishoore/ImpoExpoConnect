@@ -14,6 +14,7 @@ export const VIEW_TO_PATH: Record<View, string> = {
   "buyer-tracking": "/buyer/tracking",
   "buyer-quotations": "/buyer/quotations",
   "buyer-payment": "/buyer/payment",
+  "buyer-notifications": "/buyer/notifications",
 
   "admin-login": "/admin/login",
   "admin-register": "/admin/register",
@@ -24,6 +25,7 @@ export const VIEW_TO_PATH: Record<View, string> = {
   "admin-orders": "/admin/orders",
   "admin-payments": "/admin/payments",
   "admin-reports": "/admin/reports",
+  "admin-notifications": "/admin/notifications",
 };
 
 const PATH_TO_VIEW: Record<string, View> = Object.fromEntries(

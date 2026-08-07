@@ -11,6 +11,7 @@ const adminDashboardRoutes = require("./adminDashboardRoutes");
 const buyerPaymentRoutes = require("./buyerPaymentRoutes");
 const adminPaymentRoutes = require("./adminPaymentRoutes");
 const paymentFileRoutes = require("./paymentFileRoutes");
+const notificationRoutes = require("./notificationRoutes");
 const { getMe } = require("../controllers/authController");
 const { authenticate } = require("../middleware/auth");
 
@@ -29,6 +30,7 @@ router.use("/admin/dashboard", adminDashboardRoutes);
 router.use("/admin/payments", adminPaymentRoutes);
 router.use("/admin", adminAuthRoutes);
 router.use("/payments", paymentFileRoutes);
+router.use("/notifications", notificationRoutes);
 router.get("/me", authenticate, getMe);
 
 module.exports = router;

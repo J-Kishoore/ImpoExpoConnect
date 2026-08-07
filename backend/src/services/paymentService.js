@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const { db } = require("../config/firebase");
 const { ApiError } = require("../utils/ApiError");
+const notificationService = require("./notificationService");
 const { UPLOAD_DIR } = require("../middleware/upload");
 
 const PAYMENTS = "payments";
@@ -40,7 +41,16 @@ async function createPayment(buyerId, { orderId, amount }, file) {
   });
 
   const snap = await docRef.get();
-  return toPublic(docRef.id, snap.data());
+  const payment = toPublic(docRef.id, snap.data());
+  await notificationService.create({
+    recipient: "admin:all",
+    type: "payment_uploaded",
+    title: "Payment proof uploaded",
+    body: `${order.orderCode} · ${file.originalname} by ${order.buyerCompanyName}.`,
+    data: { paymentId: payment.id, orderId: order.orderCode, orderCode: order.orderCode, buyerId },
+    link: "/admin/payments",
+  });
+  return payment;
 }
 
 async function listPaymentsForBuyer(buyerId) {
@@ -80,7 +90,23 @@ async function reviewPayment(id, { status, declineReason }) {
   };
   await ref.update(patch);
   const updated = await ref.get();
-  return toPublic(updated.id, updated.data());
+  const payment = toPublic(updated.id, updated.data());
+
+  if (payment.buyerId) {
+    const approved = status === "Approved";
+    await notificationService.create({
+      recipient: `buyer:${payment.buyerId}`,
+      type: approved ? "payment_approved" : "payment_declined",
+      title: approved ? `Payment for ${payment.orderCode} approved` : `Payment for ${payment.orderCode} declined`,
+      body: approved
+        ? "Your payment proof has been verified."
+        : `Reason: ${String(declineReason).trim()}`,
+      data: { paymentId: payment.id, orderCode: payment.orderCode, status },
+      link: "/buyer/payment",
+    });
+  }
+
+  return payment;
 }
 
 async function getPaymentFileInfo(id, requester) {

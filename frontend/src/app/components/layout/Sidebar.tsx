@@ -1,4 +1,4 @@
-import { Package, ShoppingCart, FileText, CreditCard, Menu, Home, Users, LogOut, ChevronRight, Leaf, Globe, BarChart2, Truck, Tag } from "lucide-react";
+import { Package, ShoppingCart, FileText, CreditCard, Menu, Home, Users, LogOut, ChevronRight, Leaf, Globe, BarChart2, Truck, Tag, Bell } from "lucide-react";
 import type { ElementType } from "react";
 import type { View } from "../../types";
 import { useAuth } from "../../context/AuthContext";
@@ -18,6 +18,7 @@ export function Sidebar({ view, setView, collapsed, setCollapsed }: {
     { icon: Truck, label: "Order Tracking", view: "buyer-tracking" },
     { icon: FileText, label: "Quotations", view: "buyer-quotations" },
     { icon: CreditCard, label: "Payments", view: "buyer-payment" },
+    { icon: Bell, label: "Notifications", view: "buyer-notifications" },
   ];
   const adminNav: NavItem[] = [
     { icon: BarChart2, label: "Dashboard", view: "admin-dashboard" },
@@ -27,6 +28,7 @@ export function Sidebar({ view, setView, collapsed, setCollapsed }: {
     { icon: ShoppingCart, label: "Orders", view: "admin-orders" },
     { icon: CreditCard, label: "Payments", view: "admin-payments" },
     { icon: FileText, label: "Reports", view: "admin-reports" },
+    { icon: Bell, label: "Notifications", view: "admin-notifications" },
   ];
   const nav = role === "buyer" ? buyerNav : adminNav;
   const name = role === "buyer" ? (profile as BuyerProfile | null)?.companyName : (profile as AdminProfile | null)?.name;
