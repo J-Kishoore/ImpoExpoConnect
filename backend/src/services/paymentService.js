@@ -1,12 +1,15 @@
 const fs = require("fs");
 const path = require("path");
 const { db } = require("../config/firebase");
+const { config } = require("../config/env");
 const { ApiError } = require("../utils/ApiError");
 const notificationService = require("./notificationService");
+const emailService = require("./emailService");
 const { UPLOAD_DIR } = require("../middleware/upload");
 
 const PAYMENTS = "payments";
 const ORDERS = "orders";
+const BUYERS = "buyers";
 
 function toPublic(id, data) {
   const { storedFileName, ...rest } = data; // never leak the on-disk filename
@@ -104,6 +107,29 @@ async function reviewPayment(id, { status, declineReason }) {
       data: { paymentId: payment.id, orderCode: payment.orderCode, status },
       link: "/buyer/payment",
     });
+
+    const buyerSnap = await db.collection(BUYERS).doc(payment.buyerId).get();
+    const buyerEmail = buyerSnap.exists ? buyerSnap.data().email : null;
+    if (buyerEmail) {
+      const reason = String(declineReason).trim();
+      emailService.sendEmail({
+        to: buyerEmail,
+        subject: approved ? `Payment for ${payment.orderCode} approved` : `Payment for ${payment.orderCode} declined`,
+        html: emailService.renderLayout({
+          heading: approved ? "Payment approved" : "Payment declined",
+          paragraphs: [
+            approved
+              ? `Your payment proof for order ${payment.orderCode} has been verified.`
+              : `Your payment proof for order ${payment.orderCode} was declined.${reason ? ` Reason: ${reason}` : ""}`,
+          ],
+          details: [
+            { label: "Order", value: payment.orderCode },
+            { label: "Amount", value: payment.amount || "—" },
+          ],
+          cta: { label: "View payments", href: `${config.frontendUrl}/buyer/payment` },
+        }),
+      });
+    }
   }
 
   return payment;

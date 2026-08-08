@@ -44,6 +44,11 @@ export function BuyerLogin({ setView, showToast }: {
           <input type="password" required value={password} onChange={e => setPassword(e.target.value)}
             className="w-full px-3 py-2.5 rounded-lg bg-input-background border border-border text-sm outline-none focus:ring-2 focus:ring-[#1e5c3a]/30" />
         </div>
+        <div className="flex items-center justify-end">
+          <button type="button" onClick={() => setView("buyer-forgot-password")} className="text-xs text-[#1e5c3a] font-medium hover:underline">
+            Forgot password?
+          </button>
+        </div>
         <Btn type="submit" variant="primary" size="lg" disabled={submitting} className="w-full justify-center">
           {submitting ? "Signing in..." : "Sign In"}
         </Btn>

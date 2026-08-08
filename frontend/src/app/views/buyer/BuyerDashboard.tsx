@@ -1,19 +1,23 @@
 import { useEffect, useState } from "react";
-import { Package, ShoppingCart, FileText, ClipboardList, Bell, ChevronRight, ArrowRight, Plus, CheckCircle } from "lucide-react";
+import { Package, ShoppingCart, FileText, ClipboardList, Bell, ChevronRight, ArrowRight, Plus, CheckCircle, AlertTriangle } from "lucide-react";
 import type { ElementType } from "react";
 import type { View } from "../../types";
 import { Badge, Btn, Card, StatCard } from "../../components/shared";
 import { useAuth } from "../../context/AuthContext";
-import { ApiError, listMyOrders } from "../../lib/api";
+import { ApiError, listMyOrders, resendVerification } from "../../lib/api";
 import type { BuyerProfile, Order } from "../../lib/api";
 
 type ActivityEntry = { id: string; action: string; time: string; type: "order" | "quote" };
 
-export function BuyerDashboard({ setView }: { setView: (v: View) => void }) {
+export function BuyerDashboard({ setView, showToast }: {
+  setView: (v: View) => void;
+  showToast: (m: string, t: "success" | "error" | "info") => void;
+}) {
   const { profile, token } = useAuth();
   const buyer = profile as BuyerProfile | null;
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [resending, setResending] = useState(false);
 
   useEffect(() => {
     if (!token) return;
@@ -22,6 +26,19 @@ export function BuyerDashboard({ setView }: { setView: (v: View) => void }) {
       .catch(() => { /* dashboard degrades gracefully to an empty state */ })
       .finally(() => setLoading(false));
   }, [token]);
+
+  const handleResend = async () => {
+    if (!buyer?.email || resending) return;
+    setResending(true);
+    try {
+      await resendVerification(buyer.email);
+      showToast("Verification email sent. Check your inbox.", "success");
+    } catch (err) {
+      showToast(err instanceof ApiError ? err.message : "Unable to resend verification email.", "error");
+    } finally {
+      setResending(false);
+    }
+  };
 
   const activeOrders = orders.filter(o => o.status === "In Progress").length;
   const pendingQuotations = orders.filter(o => o.status === "Requested").length;
@@ -49,6 +66,20 @@ export function BuyerDashboard({ setView }: { setView: (v: View) => void }) {
         </div>
         <Btn variant="primary" onClick={() => setView("buyer-order-form")}><Plus size={15} /> New Order</Btn>
       </div>
+      {buyer && buyer.emailVerified === false && (
+        <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-xl border border-amber-200 bg-amber-50">
+          <div className="flex items-center gap-3">
+            <AlertTriangle size={18} className="text-amber-600 flex-shrink-0" />
+            <div>
+              <p className="text-sm font-medium text-amber-900">Verify your email address</p>
+              <p className="text-xs text-amber-700">You won't be able to place orders until your email is verified. Check your inbox or resend the verification link.</p>
+            </div>
+          </div>
+          <Btn variant="secondary" size="sm" disabled={resending} onClick={handleResend}>
+            {resending ? "Sending..." : "Resend verification email"}
+          </Btn>
+        </div>
+      )}
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard icon={ShoppingCart} label="Active Orders" value={String(activeOrders)} sub="In transit" color="green" />
         <StatCard icon={FileText} label="Pending Quotations" value={String(pendingQuotations)} sub="Awaiting response" color="amber" />

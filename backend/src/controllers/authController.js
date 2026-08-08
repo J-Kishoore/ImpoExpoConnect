@@ -4,6 +4,8 @@ const { ApiError } = require("../utils/ApiError");
 const { isValidEmail, isStrongPassword } = require("../utils/validators");
 const { config } = require("../config/env");
 const authService = require("../services/authService");
+const passwordResetService = require("../services/passwordResetService");
+const emailVerificationService = require("../services/emailVerificationService");
 
 const registerBuyer = asyncHandler(async (req, res) => {
   const { companyName, contactName, email, password, country, phone } = req.body;
@@ -53,4 +55,46 @@ const getMe = asyncHandler(async (req, res) => {
   sendSuccess(res, 200, { role: req.user.role, profile });
 });
 
-module.exports = { registerBuyer, loginBuyer, registerAdmin, loginAdmin, getMe };
+const forgotPassword = (role) =>
+  asyncHandler(async (req, res) => {
+    const { email } = req.body;
+    if (!email) throw new ApiError(400, "email is required.");
+    if (!isValidEmail(email)) throw new ApiError(400, "Invalid email address.");
+    const result = await passwordResetService.requestPasswordReset({ email, role });
+    sendSuccess(res, 200, result);
+  });
+
+const resetPassword = (role) =>
+  asyncHandler(async (req, res) => {
+    const { token, password } = req.body;
+    if (!token || !password) throw new ApiError(400, "token and password are required.");
+    const result = await passwordResetService.resetPassword({ token, role, newPassword: password });
+    sendSuccess(res, 200, result);
+  });
+
+const verifyEmail = asyncHandler(async (req, res) => {
+  const { token } = req.body;
+  if (!token) throw new ApiError(400, "token is required.");
+  const result = await emailVerificationService.verifyEmail({ token });
+  sendSuccess(res, 200, result);
+});
+
+const resendVerificationEmail = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+  if (!email) throw new ApiError(400, "email is required.");
+  if (!isValidEmail(email)) throw new ApiError(400, "Invalid email address.");
+  const result = await emailVerificationService.resendVerification({ email });
+  sendSuccess(res, 200, result);
+});
+
+module.exports = {
+  registerBuyer,
+  loginBuyer,
+  registerAdmin,
+  loginAdmin,
+  getMe,
+  forgotPassword,
+  resetPassword,
+  verifyEmail,
+  resendVerificationEmail,
+};

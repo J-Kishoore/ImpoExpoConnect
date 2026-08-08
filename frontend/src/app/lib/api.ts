@@ -46,6 +46,7 @@ export type BuyerProfile = {
   phone: string | null;
   country: string | null;
   status: "Pending" | "Active" | "Suspended";
+  emailVerified: boolean;
   createdAt: string;
 };
 
@@ -96,6 +97,22 @@ export function loginAdmin(payload: { email: string; password: string }) {
 
 export function getMe(token: string) {
   return apiFetch<MeResponse>("/me", { method: "GET" }, token);
+}
+
+export function forgotPassword(role: "buyer" | "admin", email: string) {
+  return apiFetch<{ success: true }>(`/${role}/forgot-password`, { method: "POST", body: JSON.stringify({ email }) });
+}
+
+export function resetPassword(role: "buyer" | "admin", token: string, password: string) {
+  return apiFetch<{ success: true }>(`/${role}/reset-password`, { method: "POST", body: JSON.stringify({ token, password }) });
+}
+
+export function verifyEmail(token: string) {
+  return apiFetch<{ success: true }>("/buyer/verify-email", { method: "POST", body: JSON.stringify({ token }) });
+}
+
+export function resendVerification(email: string) {
+  return apiFetch<{ success: true }>("/buyer/resend-verification", { method: "POST", body: JSON.stringify({ email }) });
 }
 
 export type BuyerUpdatePayload = Partial<

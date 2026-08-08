@@ -8,6 +8,7 @@ export const VIEW_TO_PATH: Record<View, string> = {
 
   "buyer-login": "/buyer/login",
   "buyer-register": "/buyer/register",
+  "buyer-forgot-password": "/buyer/forgot-password",
   "buyer-dashboard": "/buyer/dashboard",
   "buyer-catalog": "/buyer/catalog",
   "buyer-order-form": "/buyer/order",
@@ -18,6 +19,7 @@ export const VIEW_TO_PATH: Record<View, string> = {
 
   "admin-login": "/admin/login",
   "admin-register": "/admin/register",
+  "admin-forgot-password": "/admin/forgot-password",
   "admin-dashboard": "/admin/dashboard",
   "admin-buyers": "/admin/buyers",
   "admin-products": "/admin/products",
@@ -26,6 +28,9 @@ export const VIEW_TO_PATH: Record<View, string> = {
   "admin-payments": "/admin/payments",
   "admin-reports": "/admin/reports",
   "admin-notifications": "/admin/notifications",
+
+  "reset-password": "/reset-password",
+  "verify-email": "/verify-email",
 };
 
 const PATH_TO_VIEW: Record<string, View> = Object.fromEntries(

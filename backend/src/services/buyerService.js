@@ -1,6 +1,8 @@
 const { db } = require("../config/firebase");
+const { config } = require("../config/env");
 const { ApiError } = require("../utils/ApiError");
 const notificationService = require("./notificationService");
+const emailService = require("./emailService");
 
 const BUYERS = "buyers";
 const EDITABLE_FIELDS = ["companyName", "contactName", "email", "phone", "country", "status"];
@@ -77,6 +79,24 @@ async function updateBuyer(id, updates) {
       data: { status: patch.status },
       link: "/buyer/dashboard",
     });
+
+    if (buyer.email) {
+      emailService.sendEmail({
+        to: buyer.email,
+        subject: approved
+          ? "Your ImpoExpo Connect account is approved"
+          : "Your ImpoExpo Connect account has been suspended",
+        html: emailService.renderLayout({
+          heading: approved ? "Account approved" : "Account suspended",
+          paragraphs: [
+            approved
+              ? `Congratulations ${buyer.companyName}! Your account is now active. You can place bulk orders and send payment proofs.`
+              : `Your ImpoExpo Connect account has been suspended. Please contact support to restore access.`,
+          ],
+          cta: { label: "Open portal", href: `${config.frontendUrl}/buyer/dashboard` },
+        }),
+      });
+    }
   }
 
   return buyer;

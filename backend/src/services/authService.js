@@ -3,6 +3,7 @@ const { hashPassword, comparePassword } = require("../utils/password");
 const { signToken } = require("../utils/jwt");
 const { ApiError } = require("../utils/ApiError");
 const notificationService = require("./notificationService");
+const emailVerificationService = require("./emailVerificationService");
 
 const BUYERS = "buyers";
 const ADMINS = "admins";
@@ -32,6 +33,7 @@ async function registerBuyer({ companyName, contactName, email, password, countr
     country: country || null,
     passwordHash,
     status: "Pending",
+    emailVerified: false,
     createdAt: new Date().toISOString(),
   });
 
@@ -43,6 +45,11 @@ async function registerBuyer({ companyName, contactName, email, password, countr
     body: `${companyName} (${country || "country not specified"}) signed up and is awaiting approval.`,
     data: { buyerId: docRef.id, companyName, email: normalizedEmail },
     link: "/admin/buyers",
+  });
+  await emailVerificationService.requestVerification({
+    userId: docRef.id,
+    email: normalizedEmail,
+    name: companyName,
   });
   const token = signToken({ sub: docRef.id, role: "buyer", email: normalizedEmail });
   return { token, buyer: stripHash(docRef.id, snap.data()) };

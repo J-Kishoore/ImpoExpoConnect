@@ -1,6 +1,8 @@
 const { db } = require("../config/firebase");
+const { config } = require("../config/env");
 const { ApiError } = require("../utils/ApiError");
 const notificationService = require("./notificationService");
+const emailService = require("./emailService");
 
 const ORDERS = "orders";
 const PRODUCTS = "products";
@@ -56,6 +58,10 @@ async function createOrder(buyerId, { productId, qty, deliveryPort, shipmentDate
 
   const product = productDoc.data();
   const buyer = buyerDoc.data();
+
+  if (!buyer.emailVerified) {
+    throw new ApiError(403, "Please verify your email before placing orders.");
+  }
 
   const minOrderQty = parseMinOrderQuantity(product.minOrder);
   if (minOrderQty !== null && qtyNum < minOrderQty) {
@@ -144,12 +150,40 @@ async function updateOrderStatus(id, { status, quotedAmount, quotedNote }) {
   const order = toPublic(updated.id, updated.data());
 
   const statusMeta = {
-    Quoted: { type: "order_quoted", title: `Quotation received for ${order.orderCode}`, body: `${order.productName} · ${order.qty} MT priced at ${patch.quotedAmount}.`, link: "/buyer/quotations" },
-    Approved: { type: "order_approved", title: `Order ${order.orderCode} approved`, body: `${order.productName} · ${order.qty} MT is moving forward.`, link: "/buyer/tracking" },
-    Rejected: { type: "order_rejected", title: `Order ${order.orderCode} rejected`, body: patch.quotedNote ? `${order.productName} · ${patch.quotedNote}` : `${order.productName} · ${order.qty} MT could not be accepted.`, link: "/buyer/tracking" },
-    "In Progress": { type: "order_in_progress", title: `Order ${order.orderCode} is in progress`, body: `${order.productName} · ${order.qty} MT is being prepared.`, link: "/buyer/tracking" },
-    Delayed: { type: "order_delayed", title: `Order ${order.orderCode} delayed`, body: patch.quotedNote ? `${order.productName} · ${patch.quotedNote}` : `${order.productName} · ${order.qty} MT is delayed.`, link: "/buyer/tracking" },
-    Completed: { type: "order_completed", title: `Order ${order.orderCode} completed`, body: `${order.productName} · ${order.qty} MT has been delivered.`, link: "/buyer/tracking" },
+    Quoted: {
+      type: "order_quoted", title: `Quotation received for ${order.orderCode}`, body: `${order.productName} · ${order.qty} MT priced at ${patch.quotedAmount}.`, link: "/buyer/quotations",
+      emailSubject: `Quotation received for ${order.orderCode}`,
+      emailIntro: `A quotation for ${order.productName} (${order.qty} MT) is ready: ${patch.quotedAmount}. Review it in your quotations inbox.`,
+    },
+    Approved: {
+      type: "order_approved", title: `Order ${order.orderCode} approved`, body: `${order.productName} · ${order.qty} MT is moving forward.`, link: "/buyer/tracking",
+      emailSubject: `Order ${order.orderCode} approved`,
+      emailIntro: `Great news — your order for ${order.productName} (${order.qty} MT) has been approved and will be prepared for shipment.`,
+    },
+    Rejected: {
+      type: "order_rejected", title: `Order ${order.orderCode} rejected`, body: patch.quotedNote ? `${order.productName} · ${patch.quotedNote}` : `${order.productName} · ${order.qty} MT could not be accepted.`, link: "/buyer/tracking",
+      emailSubject: `Order ${order.orderCode} rejected`,
+      emailIntro: patch.quotedNote
+        ? `We're sorry, but your order for ${order.productName} (${order.qty} MT) was not accepted. ${patch.quotedNote}`
+        : `We're sorry, but your order for ${order.productName} (${order.qty} MT) could not be accepted.`,
+    },
+    "In Progress": {
+      type: "order_in_progress", title: `Order ${order.orderCode} is in progress`, body: `${order.productName} · ${order.qty} MT is being prepared.`, link: "/buyer/tracking",
+      emailSubject: `Order ${order.orderCode} dispatched`,
+      emailIntro: `Your order for ${order.productName} (${order.qty} MT) is now in progress and being prepared for dispatch.`,
+    },
+    Delayed: {
+      type: "order_delayed", title: `Order ${order.orderCode} delayed`, body: patch.quotedNote ? `${order.productName} · ${patch.quotedNote}` : `${order.productName} · ${order.qty} MT is delayed.`, link: "/buyer/tracking",
+      emailSubject: `Order ${order.orderCode} delayed`,
+      emailIntro: patch.quotedNote
+        ? `Your order for ${order.productName} (${order.qty} MT) has been delayed. ${patch.quotedNote}`
+        : `Your order for ${order.productName} (${order.qty} MT) has been delayed. We'll keep you updated.`,
+    },
+    Completed: {
+      type: "order_completed", title: `Order ${order.orderCode} completed`, body: `${order.productName} · ${order.qty} MT has been delivered.`, link: "/buyer/tracking",
+      emailSubject: `Order ${order.orderCode} completed`,
+      emailIntro: `Your order for ${order.productName} (${order.qty} MT) has been delivered. Thank you for trading with us.`,
+    },
   };
   const meta = statusMeta[status];
   if (meta && order.buyerId) {
@@ -161,6 +195,27 @@ async function updateOrderStatus(id, { status, quotedAmount, quotedNote }) {
       data: { orderId: order.id, orderCode: order.orderCode, status },
       link: meta.link,
     });
+
+    const buyerSnap = await db.collection(BUYERS).doc(order.buyerId).get();
+    const buyerEmail = buyerSnap.exists ? buyerSnap.data().email : null;
+    if (buyerEmail) {
+      const details = [
+        { label: "Order ID", value: order.orderCode },
+        { label: "Product", value: order.productName },
+        { label: "Quantity", value: `${order.qty} MT` },
+      ];
+      if (order.quotedAmount) details.push({ label: "Amount", value: order.quotedAmount });
+      emailService.sendEmail({
+        to: buyerEmail,
+        subject: meta.emailSubject,
+        html: emailService.renderLayout({
+          heading: meta.emailSubject,
+          paragraphs: [meta.emailIntro],
+          details,
+          cta: { label: "View in portal", href: `${config.frontendUrl}${meta.link}` },
+        }),
+      });
+    }
   }
 
   return order;

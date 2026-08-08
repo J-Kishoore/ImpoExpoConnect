@@ -26,6 +26,19 @@ const config = {
   jwtSecret: process.env.JWT_SECRET,
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || "2h",
   adminInviteCode: process.env.ADMIN_INVITE_CODE || null,
+  frontendUrl: process.env.FRONTEND_URL || "http://localhost:5173",
+  email: {
+    smtpHost: process.env.SMTP_HOST || null,
+    smtpPort: parseInt(process.env.SMTP_PORT, 10) || 587,
+    smtpSecure: process.env.SMTP_SECURE === "true",
+    smtpUser: process.env.SMTP_USER || null,
+    smtpPass: process.env.SMTP_PASS || null,
+    from: process.env.MAIL_FROM || "ImpoExpo Connect <no-reply@localhost>",
+  },
+  token: {
+    resetTtl: process.env.RESET_TOKEN_TTL || "15m",
+    verificationTtl: process.env.VERIFICATION_TOKEN_TTL || "10m",
+  },
   firebase: {
     projectId: process.env.FIREBASE_PROJECT_ID,
     clientEmail: process.env.FIREBASE_CLIENT_EMAIL,

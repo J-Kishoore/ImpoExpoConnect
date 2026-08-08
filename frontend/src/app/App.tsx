@@ -15,6 +15,9 @@ import {
   AdminDashboard, AdminBuyers, AdminProducts, AdminCategories, AdminOrders, AdminPayments, AdminReports,
 } from "./views/admin";
 import { NotificationsView } from "./views/notifications/NotificationsView";
+import { ForgotPassword } from "./views/auth/ForgotPassword";
+import { ResetPassword } from "./views/auth/ResetPassword";
+import { VerifyEmail } from "./views/auth/VerifyEmail";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { NotificationProvider } from "./context/NotificationContext";
 
@@ -81,10 +84,11 @@ function AppShell() {
       case "contact": return <ContactView showToast={showToast} />;
 
       case "buyer-login":
-        return auth.role === "buyer" ? <BuyerDashboard setView={setView} /> : <BuyerLogin setView={setView} showToast={showToast} />;
+        return auth.role === "buyer" ? <BuyerDashboard setView={setView} showToast={showToast} /> : <BuyerLogin setView={setView} showToast={showToast} />;
       case "buyer-register":
-        return auth.role === "buyer" ? <BuyerDashboard setView={setView} /> : <BuyerRegister setView={setView} showToast={showToast} />;
-      case "buyer-dashboard": return <BuyerDashboard setView={setView} />;
+        return auth.role === "buyer" ? <BuyerDashboard setView={setView} showToast={showToast} /> : <BuyerRegister setView={setView} showToast={showToast} />;
+      case "buyer-forgot-password": return <ForgotPassword role="buyer" setView={setView} />;
+      case "buyer-dashboard": return <BuyerDashboard setView={setView} showToast={showToast} />;
       case "buyer-catalog": return <BuyerCatalog setView={setView} showToast={showToast} />;
       case "buyer-order-form": return <BuyerOrderForm showToast={showToast} />;
       case "buyer-tracking": return <BuyerTracking showToast={showToast} />;
@@ -96,6 +100,7 @@ function AppShell() {
         return auth.role === "admin" ? <AdminDashboard setView={setView} /> : <AdminLogin setView={setView} showToast={showToast} />;
       case "admin-register":
         return auth.role === "admin" ? <AdminDashboard setView={setView} /> : <AdminRegister setView={setView} showToast={showToast} />;
+      case "admin-forgot-password": return <ForgotPassword role="admin" setView={setView} />;
       case "admin-dashboard": return <AdminDashboard setView={setView} />;
       case "admin-buyers": return <AdminBuyers showToast={showToast} />;
       case "admin-products": return <AdminProducts showToast={showToast} />;
@@ -104,6 +109,9 @@ function AppShell() {
       case "admin-payments": return <AdminPayments showToast={showToast} />;
       case "admin-reports": return <AdminReports showToast={showToast} />;
       case "admin-notifications": return <NotificationsView />;
+
+      case "reset-password": return <ResetPassword setView={setView} />;
+      case "verify-email": return <VerifyEmail setView={setView} />;
 
       default: return null;
     }
