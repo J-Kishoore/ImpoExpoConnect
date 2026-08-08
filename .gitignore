@@ -4,3 +4,4 @@
 /backend/node_modules
 /backend/.env
 /backend/uploads
+/selenium-test/node_modules

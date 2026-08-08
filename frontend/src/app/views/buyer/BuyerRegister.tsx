@@ -40,57 +40,64 @@ export function BuyerRegister({ setView, showToast }: {
   };
 
   return (
-    <AuthLayout title="Create a Buyer Account" subtitle="Register to request bulk quotations and track orders">
-      <form onSubmit={submit} className="space-y-4">
-        {error && <div className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</div>}
+    <AuthLayout title="Create a Buyer Account" subtitle="Register to request bulk quotations and track orders" data-testid="buyer-register-page">
+      <form onSubmit={submit} className="space-y-4" data-testid="buyer-register-form">
+        {error && <div className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2" data-testid="buyer-register-error">{error}</div>}
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-medium text-foreground mb-1.5">Company Name *</label>
-            <input required value={companyName} onChange={e => setCompanyName(e.target.value)}
+            <label className="block text-xs font-medium text-foreground mb-1.5" htmlFor="buyer-register-company-name">Company Name *</label>
+            <input required name="companyName" id="buyer-register-company-name" value={companyName} onChange={e => setCompanyName(e.target.value)}
+              autoComplete="organization" aria-label="Company Name" data-testid="buyer-register-company-name-input"
               className="w-full px-3 py-2.5 rounded-lg bg-input-background border border-border text-sm outline-none focus:ring-2 focus:ring-[#1e5c3a]/30" />
           </div>
           <div>
-            <label className="block text-xs font-medium text-foreground mb-1.5">Contact Name *</label>
-            <input required value={contactName} onChange={e => setContactName(e.target.value)}
+            <label className="block text-xs font-medium text-foreground mb-1.5" htmlFor="buyer-register-contact-name">Contact Name *</label>
+            <input required name="contactName" id="buyer-register-contact-name" value={contactName} onChange={e => setContactName(e.target.value)}
+              autoComplete="name" aria-label="Contact Name" data-testid="buyer-register-contact-name-input"
               className="w-full px-3 py-2.5 rounded-lg bg-input-background border border-border text-sm outline-none focus:ring-2 focus:ring-[#1e5c3a]/30" />
           </div>
         </div>
         <div>
-          <label className="block text-xs font-medium text-foreground mb-1.5">Email *</label>
-          <input type="email" required value={email} onChange={e => setEmail(e.target.value)}
+          <label className="block text-xs font-medium text-foreground mb-1.5" htmlFor="buyer-register-email">Email *</label>
+          <input type="email" name="email" id="buyer-register-email" required value={email} onChange={e => setEmail(e.target.value)}
+            autoComplete="email" aria-label="Email" data-testid="buyer-register-email-input"
             className="w-full px-3 py-2.5 rounded-lg bg-input-background border border-border text-sm outline-none focus:ring-2 focus:ring-[#1e5c3a]/30" />
         </div>
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-medium text-foreground mb-1.5">Country</label>
-            <input value={country} onChange={e => setCountry(e.target.value)}
+            <label className="block text-xs font-medium text-foreground mb-1.5" htmlFor="buyer-register-country">Country</label>
+            <input name="country" id="buyer-register-country" value={country} onChange={e => setCountry(e.target.value)}
+              autoComplete="country-name" aria-label="Country" data-testid="buyer-register-country-input"
               className="w-full px-3 py-2.5 rounded-lg bg-input-background border border-border text-sm outline-none focus:ring-2 focus:ring-[#1e5c3a]/30" />
           </div>
           <div>
-            <label className="block text-xs font-medium text-foreground mb-1.5">Phone</label>
-            <input value={phone} onChange={e => setPhone(e.target.value)}
+            <label className="block text-xs font-medium text-foreground mb-1.5" htmlFor="buyer-register-phone">Phone</label>
+            <input name="phone" id="buyer-register-phone" value={phone} onChange={e => setPhone(e.target.value)}
+              autoComplete="tel" aria-label="Phone" data-testid="buyer-register-phone-input"
               className="w-full px-3 py-2.5 rounded-lg bg-input-background border border-border text-sm outline-none focus:ring-2 focus:ring-[#1e5c3a]/30" />
           </div>
         </div>
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-medium text-foreground mb-1.5">Password *</label>
-            <input type="password" required minLength={8} value={password} onChange={e => setPassword(e.target.value)}
+            <label className="block text-xs font-medium text-foreground mb-1.5" htmlFor="buyer-register-password">Password *</label>
+            <input type="password" name="password" id="buyer-register-password" required minLength={8} value={password} onChange={e => setPassword(e.target.value)}
+              autoComplete="new-password" aria-label="Password" data-testid="buyer-register-password-input"
               className="w-full px-3 py-2.5 rounded-lg bg-input-background border border-border text-sm outline-none focus:ring-2 focus:ring-[#1e5c3a]/30" />
           </div>
           <div>
-            <label className="block text-xs font-medium text-foreground mb-1.5">Confirm Password *</label>
-            <input type="password" required minLength={8} value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)}
+            <label className="block text-xs font-medium text-foreground mb-1.5" htmlFor="buyer-register-confirm-password">Confirm Password *</label>
+            <input type="password" name="confirmPassword" id="buyer-register-confirm-password" required minLength={8} value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)}
+              autoComplete="new-password" aria-label="Confirm Password" data-testid="buyer-register-confirm-password-input"
               className="w-full px-3 py-2.5 rounded-lg bg-input-background border border-border text-sm outline-none focus:ring-2 focus:ring-[#1e5c3a]/30" />
           </div>
         </div>
-        <Btn type="submit" variant="primary" size="lg" disabled={submitting} className="w-full justify-center">
+        <Btn type="submit" variant="primary" size="lg" disabled={submitting} className="w-full justify-center" data-testid="buyer-register-submit-button">
           {submitting ? "Creating account..." : "Create Account"}
         </Btn>
       </form>
       <p className="text-xs text-muted-foreground text-center mt-5">
         Already have an account?{" "}
-        <button type="button" onClick={() => setView("buyer-login")} className="text-[#1e5c3a] font-medium hover:underline">Sign In</button>
+        <button type="button" onClick={() => setView("buyer-login")} className="text-[#1e5c3a] font-medium hover:underline" data-testid="buyer-register-login-link">Sign In</button>
       </p>
     </AuthLayout>
   );

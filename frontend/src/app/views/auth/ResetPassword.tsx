@@ -42,11 +42,11 @@ export function ResetPassword({ setView }: { setView: (v: View) => void }) {
 
   if (!token) {
     return (
-      <AuthLayout title="Invalid Link" subtitle="Password reset">
+      <AuthLayout title="Invalid Link" subtitle="Password reset" data-testid="reset-password-invalid-page">
         <p className="text-sm text-muted-foreground text-center">
           This reset link is missing or malformed. Please request a new one.
         </p>
-        <Btn variant="primary" size="lg" className="w-full justify-center mt-4" onClick={() => setView(loginView)}>
+        <Btn variant="primary" size="lg" className="w-full justify-center mt-4" onClick={() => setView(loginView)} data-testid="reset-password-invalid-back-button">
           Back to Sign In
         </Btn>
       </AuthLayout>
@@ -54,28 +54,30 @@ export function ResetPassword({ setView }: { setView: (v: View) => void }) {
   }
 
   return (
-    <AuthLayout title="Set a New Password" subtitle={role === "buyer" ? "Choose a new password for your buyer account" : "Choose a new password for your admin account"}>
+    <AuthLayout title="Set a New Password" subtitle={role === "buyer" ? "Choose a new password for your buyer account" : "Choose a new password for your admin account"} data-testid="reset-password-page">
       {done ? (
-        <div className="space-y-4 text-center">
+        <div className="space-y-4 text-center" data-testid="reset-password-success">
           <p className="text-sm text-foreground leading-relaxed">Your password has been updated. You can now sign in with your new password.</p>
-          <Btn variant="primary" className="w-full justify-center" onClick={() => setView(loginView)}>
+          <Btn variant="primary" className="w-full justify-center" onClick={() => setView(loginView)} data-testid="reset-password-login-button">
             Sign In
           </Btn>
         </div>
       ) : (
-        <form onSubmit={submit} className="space-y-4">
-          {error && <div className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</div>}
+        <form onSubmit={submit} className="space-y-4" data-testid="reset-password-form">
+          {error && <div className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2" data-testid="reset-password-error">{error}</div>}
           <div>
-            <label className="block text-xs font-medium text-foreground mb-1.5">New Password</label>
-            <input type="password" required value={password} onChange={e => setPassword(e.target.value)}
+            <label className="block text-xs font-medium text-foreground mb-1.5" htmlFor="reset-password-new-password">New Password</label>
+            <input type="password" name="password" id="reset-password-new-password" required value={password} onChange={e => setPassword(e.target.value)}
+              autoComplete="new-password" aria-label="New Password" data-testid="reset-password-new-password-input"
               className="w-full px-3 py-2.5 rounded-lg bg-input-background border border-border text-sm outline-none focus:ring-2 focus:ring-[#1e5c3a]/30" />
           </div>
           <div>
-            <label className="block text-xs font-medium text-foreground mb-1.5">Confirm Password</label>
-            <input type="password" required value={confirm} onChange={e => setConfirm(e.target.value)}
+            <label className="block text-xs font-medium text-foreground mb-1.5" htmlFor="reset-password-confirm-password">Confirm Password</label>
+            <input type="password" name="confirm" id="reset-password-confirm-password" required value={confirm} onChange={e => setConfirm(e.target.value)}
+              autoComplete="new-password" aria-label="Confirm Password" data-testid="reset-password-confirm-password-input"
               className="w-full px-3 py-2.5 rounded-lg bg-input-background border border-border text-sm outline-none focus:ring-2 focus:ring-[#1e5c3a]/30" />
           </div>
-          <Btn type="submit" variant="primary" size="lg" disabled={submitting} className="w-full justify-center">
+          <Btn type="submit" variant="primary" size="lg" disabled={submitting} className="w-full justify-center" data-testid="reset-password-submit-button">
             {submitting ? "Updating..." : "Update Password"}
           </Btn>
         </form>

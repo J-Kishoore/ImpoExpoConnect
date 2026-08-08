@@ -62,30 +62,31 @@ export function NotificationsView() {
   };
 
   return (
-    <div className="space-y-5 max-w-3xl">
+    <div className="space-y-5 max-w-3xl" data-testid="notifications-page">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h2 className="text-xl font-semibold text-foreground" style={{ fontFamily: "Fraunces, serif" }}>{title}</h2>
           <p className="text-sm text-muted-foreground">{unreadCount > 0 ? `${unreadCount} unread` : "You're all caught up."}</p>
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1 bg-card rounded-lg border border-border p-1">
+          <div className="flex items-center gap-1 bg-card rounded-lg border border-border p-1" data-testid="notifications-filter">
             {(["all", "unread"] as const).map(f => (
               <button key={f} onClick={() => setFilter(f)}
-                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${filter === f ? "bg-[#1e5c3a] text-white" : "text-muted-foreground hover:text-foreground"}`}>
+                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${filter === f ? "bg-[#1e5c3a] text-white" : "text-muted-foreground hover:text-foreground"}`}
+                data-testid={`notifications-filter-${f}`}>
                 {f === "all" ? "All" : "Unread"}
               </button>
             ))}
           </div>
-          <Btn variant="secondary" size="sm" onClick={markAllRead} disabled={unreadCount === 0}>
+          <Btn variant="secondary" size="sm" onClick={markAllRead} disabled={unreadCount === 0} data-testid="notifications-page-mark-all-read-button">
             <CheckCheck size={13} /> Mark all read
           </Btn>
         </div>
       </div>
 
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden" data-testid="notifications-list-card">
         {visible.length === 0 ? (
-          <div className="p-10 text-center">
+          <div className="p-10 text-center" data-testid="notifications-empty">
             <Bell size={28} className="mx-auto mb-3 text-muted-foreground" />
             <p className="text-sm text-muted-foreground">
               {filter === "unread" ? "No unread notifications." : "No notifications yet."}
@@ -97,7 +98,7 @@ export function NotificationsView() {
               const Icon = TYPE_ICON[n.type] || Bell;
               return (
                 <button key={n.id} onClick={() => openItem(n)}
-                  className={`w-full text-left px-4 py-4 flex items-start gap-4 transition-colors hover:bg-[#f6f4f0] ${n.isRead ? "" : "bg-emerald-50/40"}`}>
+                  className={`w-full text-left px-4 py-4 flex items-start gap-4 transition-colors hover:bg-[#f6f4f0] ${n.isRead ? "" : "bg-emerald-50/40"}`} data-testid="notifications-item">
                   <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${n.isRead ? "bg-[#edeae3] text-muted-foreground" : "bg-emerald-100 text-emerald-700"}`}>
                     <Icon size={15} />
                   </div>

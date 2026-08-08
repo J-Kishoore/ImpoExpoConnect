@@ -9,23 +9,24 @@ export function ProductsView({ setView }: { setView: (v: View) => void }) {
   const cats = ["All", "Grains", "Vegetables", "Pulses", "Processed"];
   const filtered = category === "All" ? products : products.filter(p => p.category === category);
   return (
-    <div className="max-w-7xl mx-auto px-5 py-12">
+    <div className="max-w-7xl mx-auto px-5 py-12" data-testid="products-page">
       <div className="mb-8">
         <p className="text-[#c47f2e] text-sm font-medium uppercase tracking-widest mb-1">Catalog</p>
         <h1 className="text-3xl font-semibold text-foreground mb-1" style={{ fontFamily: "Fraunces, serif" }}>Product Range</h1>
         <p className="text-muted-foreground text-sm">Premium Indian agricultural commodities available for bulk export.</p>
       </div>
-      <div className="flex flex-wrap gap-2 mb-8">
+      <div className="flex flex-wrap gap-2 mb-8" data-testid="products-category-filters">
         {cats.map(c => (
           <button key={c} onClick={() => setCategory(c)}
-            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${category === c ? "bg-[#1e5c3a] text-white" : "bg-[#edeae3] text-muted-foreground hover:bg-[#e0dbd0]"}`}>
+            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${category === c ? "bg-[#1e5c3a] text-white" : "bg-[#edeae3] text-muted-foreground hover:bg-[#e0dbd0]"}`}
+            data-testid={`products-category-${c.toLowerCase()}`}>
             {c}
           </button>
         ))}
       </div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {filtered.map(p => (
-          <Card key={p.id} className="overflow-hidden group hover:shadow-md transition-shadow">
+          <Card key={p.id} className="overflow-hidden group hover:shadow-md transition-shadow" data-testid="products-card">
             <div className="h-44 overflow-hidden bg-[#e5e1d8]">
               <img src={`https://images.unsplash.com/${p.img}?w=400&h=200&fit=crop&auto=format`}
                 alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
@@ -38,7 +39,7 @@ export function ProductsView({ setView }: { setView: (v: View) => void }) {
               <p className="text-xs text-muted-foreground mb-3">{p.category} · Min order: {p.minOrder}</p>
               <div className="flex items-center justify-between">
                 <p className="text-base font-semibold text-[#1e5c3a]">{p.price} <span className="text-xs font-normal text-muted-foreground">/ {p.unit}</span></p>
-                <Btn variant="primary" size="sm" onClick={() => setView("buyer-order-form")}>
+                <Btn variant="primary" size="sm" onClick={() => setView("buyer-order-form")} data-testid="products-order-button">
                   <ShoppingCart size={13} /> Order
                 </Btn>
               </div>

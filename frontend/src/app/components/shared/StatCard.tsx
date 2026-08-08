@@ -1,9 +1,9 @@
-import type { ElementType } from "react";
+import type { ElementType, HTMLAttributes } from "react";
 import { Card } from "./Card";
 
-export function StatCard({ icon: Icon, label, value, sub, color = "green" }: {
+export function StatCard({ icon: Icon, label, value, sub, color = "green", ...rest }: {
   icon: ElementType; label: string; value: string; sub?: string; color?: "green" | "amber" | "blue" | "slate";
-}) {
+} & HTMLAttributes<HTMLDivElement>) {
   const colors = {
     green: "bg-emerald-50 text-emerald-700",
     amber: "bg-amber-50 text-amber-700",
@@ -11,7 +11,7 @@ export function StatCard({ icon: Icon, label, value, sub, color = "green" }: {
     slate: "bg-slate-100 text-slate-600",
   };
   return (
-    <Card className="p-5">
+    <Card className="p-5" {...rest}>
       <div className="flex items-start justify-between">
         <div>
           <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-1">{label}</p>

@@ -27,19 +27,19 @@ export function BuyerQuotations({ showToast }: { showToast: (m: string, t: "succ
   const quoted = orders.filter(o => o.quotedAmount);
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5" data-testid="buyer-quotations">
       <div>
         <h2 className="text-xl font-semibold text-foreground" style={{ fontFamily: "Fraunces, serif" }}>Quotations & Invoices</h2>
         <p className="text-sm text-muted-foreground">Quotations sent by our team for your bulk order requests.</p>
       </div>
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden" data-testid="buyer-quotations-card">
         {loading ? (
           <div className="p-8 text-center text-sm text-muted-foreground">Loading quotations...</div>
         ) : quoted.length === 0 ? (
           <div className="p-8 text-center text-sm text-muted-foreground">No quotations yet. They'll appear here once our team prices your order request.</div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm" data-testid="buyer-quotations-table">
               <thead>
                 <tr className="border-b border-border bg-[#f6f4f0]">
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide">Order</th>
@@ -52,7 +52,7 @@ export function BuyerQuotations({ showToast }: { showToast: (m: string, t: "succ
               </thead>
               <tbody className="divide-y divide-border">
                 {quoted.map(o => (
-                  <tr key={o.id} className="hover:bg-[#faf9f7] transition-colors">
+                  <tr key={o.id} className="hover:bg-[#faf9f7] transition-colors" data-testid="buyer-quotations-row">
                     <td className="px-4 py-3 text-muted-foreground font-mono text-xs">{o.orderCode}</td>
                     <td className="px-4 py-3 text-foreground">{o.productName} · {o.qty} MT</td>
                     <td className="px-4 py-3 text-muted-foreground">{o.quotedAt ? new Date(o.quotedAt).toLocaleDateString() : "—"}</td>
@@ -61,11 +61,11 @@ export function BuyerQuotations({ showToast }: { showToast: (m: string, t: "succ
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-2">
                         <button onClick={() => showToast(o.quotedNote || "No additional notes from the seller.", "info")}
-                          className="p-1.5 rounded hover:bg-[#edeae3] text-muted-foreground hover:text-foreground transition-colors" title="View notes"><Eye size={14} /></button>
+                          className="p-1.5 rounded hover:bg-[#edeae3] text-muted-foreground hover:text-foreground transition-colors" title="View notes" data-testid="buyer-quotations-view-notes-button" aria-label="View notes"><Eye size={14} /></button>
                         <button onClick={() => showToast("Document download isn't available yet.", "info")}
-                          className="p-1.5 rounded hover:bg-[#edeae3] text-muted-foreground hover:text-foreground transition-colors" title="Download"><Download size={14} /></button>
+                          className="p-1.5 rounded hover:bg-[#edeae3] text-muted-foreground hover:text-foreground transition-colors" title="Download" data-testid="buyer-quotations-download-button" aria-label="Download"><Download size={14} /></button>
                         <button onClick={() => showToast("Print isn't available yet.", "info")}
-                          className="p-1.5 rounded hover:bg-[#edeae3] text-muted-foreground hover:text-foreground transition-colors" title="Print"><Printer size={14} /></button>
+                          className="p-1.5 rounded hover:bg-[#edeae3] text-muted-foreground hover:text-foreground transition-colors" title="Print" data-testid="buyer-quotations-print-button" aria-label="Print"><Printer size={14} /></button>
                       </div>
                     </td>
                   </tr>

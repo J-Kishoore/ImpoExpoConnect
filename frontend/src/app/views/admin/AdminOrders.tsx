@@ -66,20 +66,20 @@ export function AdminOrders({ showToast }: { showToast: (m: string, t: "success"
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5" data-testid="admin-orders">
       <div>
         <h2 className="text-xl font-semibold text-foreground" style={{ fontFamily: "Fraunces, serif" }}>Order Approval</h2>
         <p className="text-sm text-muted-foreground">Review buyer order requests, send quotations, and move orders through their lifecycle.</p>
       </div>
       {loading ? (
-        <Card className="p-8 text-center text-sm text-muted-foreground">Loading orders...</Card>
+        <Card className="p-8 text-center text-sm text-muted-foreground" data-testid="admin-orders-loading">Loading orders...</Card>
       ) : orders.length === 0 ? (
-        <Card className="p-8 text-center text-sm text-muted-foreground">No orders yet.</Card>
+        <Card className="p-8 text-center text-sm text-muted-foreground" data-testid="admin-orders-empty">No orders yet.</Card>
       ) : (
         <div className="grid lg:grid-cols-5 gap-5">
-          <div className="lg:col-span-2 space-y-2">
+          <div className="lg:col-span-2 space-y-2" data-testid="admin-orders-order-list">
             {orders.map(o => (
-              <button key={o.id} onClick={() => setSelectedId(o.id)}
+              <button key={o.id} onClick={() => setSelectedId(o.id)} data-testid="admin-orders-order-item"
                 className={`w-full text-left p-4 rounded-lg border transition-all ${selectedId === o.id ? "border-[#1e5c3a] bg-emerald-50/40" : "border-border bg-card hover:border-[#1e5c3a]/30"}`}>
                 <div className="flex justify-between mb-1">
                   <p className="text-sm font-medium text-foreground">{o.productName}</p>
@@ -92,7 +92,7 @@ export function AdminOrders({ showToast }: { showToast: (m: string, t: "success"
           </div>
           {selected && (
             <div className="lg:col-span-3">
-              <Card className="p-6">
+              <Card className="p-6" data-testid="admin-orders-detail-card">
                 <div className="flex items-center justify-between mb-5">
                   <h3 className="font-semibold text-foreground">Order Details</h3>
                   <Badge label={selected.status} />
@@ -129,15 +129,15 @@ export function AdminOrders({ showToast }: { showToast: (m: string, t: "success"
                 )}
 
                 {needsQuoteForm && (
-                  <form onSubmit={sendQuote} className="mb-5 p-3 bg-[#f6f4f0] rounded-lg space-y-2">
+                  <form onSubmit={sendQuote} className="mb-5 p-3 bg-[#f6f4f0] rounded-lg space-y-2" data-testid="admin-orders-quote-form">
                     <p className="text-xs font-medium text-foreground mb-1.5">Send Quotation</p>
-                    <input required value={quoteAmount} onChange={e => setQuoteAmount(e.target.value)}
+                    <input required name="quoteAmount" value={quoteAmount} onChange={e => setQuoteAmount(e.target.value)} data-testid="admin-orders-quote-amount-input"
                       placeholder="Quoted amount, e.g. $580,000"
                       className="w-full px-3 py-2 rounded-lg bg-white border border-border text-sm outline-none focus:ring-2 focus:ring-[#1e5c3a]/30" />
-                    <textarea rows={2} value={quoteNote} onChange={e => setQuoteNote(e.target.value)}
+                    <textarea rows={2} name="quoteNote" value={quoteNote} onChange={e => setQuoteNote(e.target.value)} data-testid="admin-orders-quote-note-input"
                       placeholder="Delivery timeline, terms, notes..."
                       className="w-full px-3 py-2 rounded-lg bg-white border border-border text-sm outline-none focus:ring-2 focus:ring-[#1e5c3a]/30 resize-none" />
-                    <Btn type="submit" variant="accent" size="sm" disabled={busy}><FileText size={14} /> Send Quote</Btn>
+                    <Btn type="submit" variant="accent" size="sm" disabled={busy} data-testid="admin-orders-send-quote-button"><FileText size={14} /> Send Quote</Btn>
                   </form>
                 )}
 
@@ -147,8 +147,9 @@ export function AdminOrders({ showToast }: { showToast: (m: string, t: "success"
                       const meta = ACTION_META[status];
                       if (!meta) return null;
                       const Icon = meta.icon;
+                      const testLabel = status.toLowerCase().replace(/\s+/g, "-");
                       return (
-                        <Btn key={status} variant={meta.variant} disabled={busy} onClick={() => applyUpdate({ status })}>
+                        <Btn key={status} variant={meta.variant} disabled={busy} onClick={() => applyUpdate({ status })} data-testid={`admin-orders-action-${testLabel}-button`}>
                           <Icon size={14} /> {meta.label}
                         </Btn>
                       );

@@ -1,10 +1,10 @@
-import type { ReactNode } from "react";
+import type { HTMLAttributes, ReactNode } from "react";
 import { Leaf } from "lucide-react";
 import { Card } from "./Card";
 
-export function AuthLayout({ title, subtitle, children }: { title: string; subtitle: string; children: ReactNode }) {
+export function AuthLayout({ title, subtitle, children, ...rest }: { title: string; subtitle: string; children: ReactNode } & HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#f6f4f0] px-4 py-16">
+    <div className="min-h-screen flex items-center justify-center bg-[#f6f4f0] px-4 py-16" {...rest}>
       <div className="w-full max-w-md">
         <div className="flex flex-col items-center mb-6">
           <div className="w-10 h-10 rounded-lg bg-[#1e5c3a] flex items-center justify-center mb-3">

@@ -4,7 +4,7 @@ import { Card } from "../../components/shared";
 
 export function AboutView() {
   return (
-    <div className="max-w-7xl mx-auto px-5 py-12">
+    <div className="max-w-7xl mx-auto px-5 py-12" data-testid="about-page">
       <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
         <div>
           <p className="text-[#c47f2e] text-sm font-medium uppercase tracking-widest mb-2">Our Story</p>

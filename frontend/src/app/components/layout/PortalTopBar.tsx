@@ -9,8 +9,8 @@ export function PortalTopBar({ title, collapsed }: { title: string; collapsed: b
   const displayName = name || (role === "buyer" ? "Buyer" : "Admin");
 
   return (
-    <header className={`fixed top-0 right-0 z-10 h-16 bg-white border-b border-border flex items-center justify-between px-6 transition-all ${collapsed ? "left-16" : "left-56"}`}>
-      <h1 className="text-base font-semibold text-foreground">{title}</h1>
+    <header className={`fixed top-0 right-0 z-10 h-16 bg-white border-b border-border flex items-center justify-between px-6 transition-all ${collapsed ? "left-16" : "left-56"}`} data-testid="portal-top-bar">
+      <h1 className="text-base font-semibold text-foreground" data-testid="portal-top-bar-title">{title}</h1>
       <div className="flex items-center gap-3">
         <NotificationsBell />
         <div className="flex items-center gap-2 pl-2 border-l border-border">

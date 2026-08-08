@@ -16,9 +16,9 @@ export function ChatWidget() {
   };
 
   return (
-    <div className="fixed bottom-6 left-6 z-40">
+    <div className="fixed bottom-6 left-6 z-40" data-testid="chat-widget">
       {open && (
-        <div className="mb-3 w-80 bg-card rounded-xl border border-border shadow-2xl flex flex-col overflow-hidden" style={{ height: 420 }}>
+        <div className="mb-3 w-80 bg-card rounded-xl border border-border shadow-2xl flex flex-col overflow-hidden" style={{ height: 420 }} data-testid="chat-widget-window">
           <div className="bg-[#1a2e1f] px-4 py-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-full bg-emerald-500 flex items-center justify-center">
@@ -29,7 +29,7 @@ export function ChatWidget() {
                 <p className="text-emerald-300 text-xs">Online</p>
               </div>
             </div>
-            <button onClick={() => setOpen(false)} className="text-white/60 hover:text-white"><X size={16} /></button>
+            <button onClick={() => setOpen(false)} className="text-white/60 hover:text-white" data-testid="chat-widget-close-button" aria-label="Close chat"><X size={16} /></button>
           </div>
           <div className="flex-1 overflow-y-auto p-3 space-y-3 bg-[#f6f4f0]">
             {msgs.map(m => (
@@ -42,20 +42,20 @@ export function ChatWidget() {
             ))}
           </div>
           <div className="p-2 border-t border-border bg-white flex items-center gap-2">
-            <button className="p-1.5 text-muted-foreground hover:text-foreground"><Paperclip size={15} /></button>
+            <button className="p-1.5 text-muted-foreground hover:text-foreground" data-testid="chat-widget-attach-button" aria-label="Attach file"><Paperclip size={15} /></button>
             <input
               value={input} onChange={e => setInput(e.target.value)}
               onKeyDown={e => e.key === "Enter" && send()}
               className="flex-1 text-sm bg-transparent outline-none placeholder:text-muted-foreground"
-              placeholder="Type a message..."
+              placeholder="Type a message..." name="chatMessage" data-testid="chat-widget-input"
             />
-            <button onClick={send} className="p-1.5 bg-[#1e5c3a] text-white rounded-lg hover:bg-[#174d30]"><Send size={14} /></button>
+            <button onClick={send} className="p-1.5 bg-[#1e5c3a] text-white rounded-lg hover:bg-[#174d30]" data-testid="chat-widget-send-button" aria-label="Send message"><Send size={14} /></button>
           </div>
         </div>
       )}
       <button
         onClick={() => setOpen(!open)}
-        className="w-12 h-12 rounded-full bg-[#1e5c3a] text-white shadow-lg flex items-center justify-center hover:bg-[#174d30] transition-all"
+        className="w-12 h-12 rounded-full bg-[#1e5c3a] text-white shadow-lg flex items-center justify-center hover:bg-[#174d30] transition-all" data-testid="chat-widget-toggle-button" aria-label={open ? "Close chat" : "Open chat"}
       >
         {open ? <X size={20} /> : <MessageCircle size={20} />}
       </button>

@@ -44,7 +44,7 @@ up the repo (likely the project leader) should push those first as an initial
 commit, since every page imports from them. Everyone then branches off that.
 
 ## Verifying it still runs
-
+ 
 ```bash
 npm install
 npm run dev

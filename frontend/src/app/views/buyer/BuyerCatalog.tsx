@@ -23,7 +23,7 @@ export function BuyerCatalog({ setView, showToast }: {
   const filtered = products.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5" data-testid="buyer-catalog">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h2 className="text-xl font-semibold text-foreground" style={{ fontFamily: "Fraunces, serif" }}>Product Catalog</h2>
@@ -32,20 +32,20 @@ export function BuyerCatalog({ setView, showToast }: {
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-2 bg-card rounded-lg border border-border px-3 py-2">
             <Search size={14} className="text-muted-foreground" />
-            <input value={search} onChange={e => setSearch(e.target.value)}
-              className="w-40 text-sm bg-transparent outline-none placeholder:text-muted-foreground" placeholder="Search products..." />
+            <input value={search} onChange={e => setSearch(e.target.value)} name="catalog-search" aria-label="Search products"
+              className="w-40 text-sm bg-transparent outline-none placeholder:text-muted-foreground" placeholder="Search products..." data-testid="buyer-catalog-search-input" />
           </div>
-          <Btn variant="secondary" size="sm"><Filter size={14} /> Filter</Btn>
+          <Btn variant="secondary" size="sm" data-testid="buyer-catalog-filter-button"><Filter size={14} /> Filter</Btn>
         </div>
       </div>
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden" data-testid="buyer-catalog-table-card">
         {loading ? (
           <div className="p-8 text-center text-sm text-muted-foreground">Loading products...</div>
         ) : filtered.length === 0 ? (
           <div className="p-8 text-center text-sm text-muted-foreground">No products found.</div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm" data-testid="buyer-catalog-table">
               <thead>
                 <tr className="border-b border-border bg-[#f6f4f0]">
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide">Product</th>
@@ -57,13 +57,13 @@ export function BuyerCatalog({ setView, showToast }: {
               </thead>
               <tbody className="divide-y divide-border">
                 {filtered.map(p => (
-                  <tr key={p.id} className="hover:bg-[#faf9f7] transition-colors">
+                  <tr key={p.id} className="hover:bg-[#faf9f7] transition-colors" data-testid="buyer-catalog-product-row">
                     <td className="px-4 py-3 font-medium text-foreground">{p.name}</td>
                     <td className="px-4 py-3 text-muted-foreground">{p.categoryName}</td>
                     <td className="px-4 py-3 font-semibold text-[#1e5c3a]" style={{ fontFamily: "JetBrains Mono, monospace" }}>{p.price}</td>
                     <td className="px-4 py-3 text-muted-foreground">{p.minOrder}</td>
                     <td className="px-4 py-3 text-right">
-                      <Btn variant="primary" size="sm" onClick={() => setView("buyer-order-form")}>
+                      <Btn variant="primary" size="sm" onClick={() => setView("buyer-order-form")} data-testid="buyer-catalog-request-order-button">
                         <ShoppingCart size={12} /> Request Order
                       </Btn>
                     </td>

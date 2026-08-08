@@ -9,10 +9,10 @@ export function Toast({ message, type, onClose }: { message: string; type: "succ
   const icons = { success: CheckCircle, error: XCircle, info: Bell };
   const Icon = icons[type];
   return (
-    <div className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-lg shadow-xl text-sm font-medium ${styles[type]}`} style={{ maxWidth: 340 }}>
+    <div className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-lg shadow-xl text-sm font-medium ${styles[type]}`} style={{ maxWidth: 340 }} data-testid="toast" role="alert">
       <Icon size={16} />
-      <span>{message}</span>
-      <button onClick={onClose} className="ml-2 opacity-70 hover:opacity-100"><X size={14} /></button>
+      <span data-testid="toast-message">{message}</span>
+      <button onClick={onClose} className="ml-2 opacity-70 hover:opacity-100" data-testid="toast-close-button" aria-label="Dismiss notification"><X size={14} /></button>
     </div>
   );
 }

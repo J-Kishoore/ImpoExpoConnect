@@ -54,20 +54,20 @@ export function BuyerDashboard({ setView, showToast }: {
     .slice(0, 4);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-testid="buyer-dashboard">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-semibold text-foreground" style={{ fontFamily: "Fraunces, serif" }}>
+          <h2 className="text-xl font-semibold text-foreground" style={{ fontFamily: "Fraunces, serif" }} data-testid="buyer-dashboard-welcome">
             Welcome back{buyer?.companyName ? `, ${buyer.companyName}` : ""}
           </h2>
           <p className="text-sm text-muted-foreground">
             {new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
           </p>
         </div>
-        <Btn variant="primary" onClick={() => setView("buyer-order-form")}><Plus size={15} /> New Order</Btn>
+        <Btn variant="primary" onClick={() => setView("buyer-order-form")} data-testid="buyer-dashboard-new-order-button"><Plus size={15} /> New Order</Btn>
       </div>
       {buyer && buyer.emailVerified === false && (
-        <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-xl border border-amber-200 bg-amber-50">
+        <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-xl border border-amber-200 bg-amber-50" data-testid="buyer-dashboard-verify-email-banner">
           <div className="flex items-center gap-3">
             <AlertTriangle size={18} className="text-amber-600 flex-shrink-0" />
             <div>
@@ -75,20 +75,20 @@ export function BuyerDashboard({ setView, showToast }: {
               <p className="text-xs text-amber-700">You won't be able to place orders until your email is verified. Check your inbox or resend the verification link.</p>
             </div>
           </div>
-          <Btn variant="secondary" size="sm" disabled={resending} onClick={handleResend}>
+          <Btn variant="secondary" size="sm" disabled={resending} onClick={handleResend} data-testid="buyer-dashboard-resend-verification-button">
             {resending ? "Sending..." : "Resend verification email"}
           </Btn>
         </div>
       )}
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard icon={ShoppingCart} label="Active Orders" value={String(activeOrders)} sub="In transit" color="green" />
-        <StatCard icon={FileText} label="Pending Quotations" value={String(pendingQuotations)} sub="Awaiting response" color="amber" />
-        <StatCard icon={CheckCircle} label="Approved Orders" value={String(approvedOrders)} sub="All time" color="blue" />
-        <StatCard icon={ClipboardList} label="Total Orders" value={String(orders.length)} sub="All time" color="slate" />
+        <StatCard icon={ShoppingCart} label="Active Orders" value={String(activeOrders)} sub="In transit" color="green" data-testid="buyer-dashboard-active-orders-card" />
+        <StatCard icon={FileText} label="Pending Quotations" value={String(pendingQuotations)} sub="Awaiting response" color="amber" data-testid="buyer-dashboard-pending-quotations-card" />
+        <StatCard icon={CheckCircle} label="Approved Orders" value={String(approvedOrders)} sub="All time" color="blue" data-testid="buyer-dashboard-approved-orders-card" />
+        <StatCard icon={ClipboardList} label="Total Orders" value={String(orders.length)} sub="All time" color="slate" data-testid="buyer-dashboard-total-orders-card" />
       </div>
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <Card className="p-5">
+          <Card className="p-5" data-testid="buyer-dashboard-recent-orders-card">
             <h3 className="font-semibold text-sm text-foreground mb-4">Recent Orders</h3>
             {loading ? (
               <p className="text-sm text-muted-foreground">Loading orders...</p>
@@ -97,7 +97,7 @@ export function BuyerDashboard({ setView, showToast }: {
             ) : (
               <div className="space-y-3">
                 {orders.slice(0, 4).map(o => (
-                  <div key={o.id} className="flex items-center justify-between p-3 rounded-lg bg-[#f6f4f0] hover:bg-[#f0ece5] transition-colors cursor-pointer" onClick={() => setView("buyer-tracking")}>
+                  <div key={o.id} className="flex items-center justify-between p-3 rounded-lg bg-[#f6f4f0] hover:bg-[#f0ece5] transition-colors cursor-pointer" onClick={() => setView("buyer-tracking")} data-testid="buyer-dashboard-recent-order-item">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded bg-emerald-100 flex items-center justify-center"><Package size={14} className="text-emerald-700" /></div>
                       <div>
@@ -113,13 +113,13 @@ export function BuyerDashboard({ setView, showToast }: {
                 ))}
               </div>
             )}
-            <button onClick={() => setView("buyer-tracking")} className="mt-4 text-xs text-[#1e5c3a] font-medium hover:underline flex items-center gap-1">
+            <button onClick={() => setView("buyer-tracking")} className="mt-4 text-xs text-[#1e5c3a] font-medium hover:underline flex items-center gap-1" data-testid="buyer-dashboard-view-all-orders-link">
               View all orders <ArrowRight size={12} />
             </button>
           </Card>
         </div>
         <div>
-          <Card className="p-5 h-full">
+          <Card className="p-5 h-full" data-testid="buyer-dashboard-activity-card">
             <h3 className="font-semibold text-sm text-foreground mb-4">Activity</h3>
             {activity.length === 0 ? (
               <p className="text-sm text-muted-foreground">No recent activity.</p>

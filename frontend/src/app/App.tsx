@@ -32,10 +32,10 @@ const ADMIN_VIEWS = new Set<View>([
 
 function NotFound({ setView }: { setView: (v: View) => void }) {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center gap-4 text-center px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center gap-4 text-center px-4" data-testid="not-found-page">
       <h1 className="text-2xl font-semibold text-foreground" style={{ fontFamily: "Fraunces, serif" }}>Page not found</h1>
       <p className="text-sm text-muted-foreground">The page you're looking for doesn't exist.</p>
-      <Btn variant="primary" onClick={() => setView("home")}>Back to Home</Btn>
+      <Btn variant="primary" onClick={() => setView("home")} data-testid="not-found-home-button">Back to Home</Btn>
     </div>
   );
 }

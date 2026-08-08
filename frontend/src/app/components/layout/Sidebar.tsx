@@ -43,7 +43,7 @@ export function Sidebar({ view, setView, collapsed, setCollapsed }: {
 
   return (
     <aside className={`fixed left-0 top-0 h-full z-20 flex flex-col transition-all duration-200 ${collapsed ? "w-16" : "w-56"}`}
-      style={{ background: "var(--sidebar)", borderRight: "1px solid var(--sidebar-border)" }}>
+      style={{ background: "var(--sidebar)", borderRight: "1px solid var(--sidebar-border)" }} data-testid="sidebar">
       <div className="flex items-center justify-between px-3 h-16 border-b" style={{ borderColor: "var(--sidebar-border)" }}>
         {!collapsed && (
           <div className="flex items-center gap-2 min-w-0">
@@ -56,7 +56,7 @@ export function Sidebar({ view, setView, collapsed, setCollapsed }: {
             </div>
           </div>
         )}
-        <button onClick={() => setCollapsed(!collapsed)} className="p-1.5 rounded hover:bg-white/10 text-white/60 hover:text-white flex-shrink-0 ml-auto">
+        <button onClick={() => setCollapsed(!collapsed)} className="p-1.5 rounded hover:bg-white/10 text-white/60 hover:text-white flex-shrink-0 ml-auto" data-testid="sidebar-collapse-toggle" aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}>
           {collapsed ? <ChevronRight size={16} /> : <Menu size={16} />}
         </button>
       </div>
@@ -73,13 +73,13 @@ export function Sidebar({ view, setView, collapsed, setCollapsed }: {
           </div>
         </div>
       )}
-      <nav className="flex-1 px-2 py-3 space-y-0.5 overflow-y-auto">
+      <nav className="flex-1 px-2 py-3 space-y-0.5 overflow-y-auto" data-testid="sidebar-nav">
         {nav.map(item => {
           const active = view === item.view;
           return (
             <button key={item.view} onClick={() => setView(item.view)}
               className={`w-full flex items-center gap-3 px-2.5 py-2.5 rounded-lg text-sm transition-colors ${active ? "bg-white/10 text-white font-medium" : "text-white/60 hover:bg-white/5 hover:text-white"}`}
-              title={collapsed ? item.label : undefined}>
+              title={collapsed ? item.label : undefined} data-testid={`sidebar-nav-${item.view}`}>
               <item.icon size={17} className="flex-shrink-0" />
               {!collapsed && <span className="truncate">{item.label}</span>}
               {active && !collapsed && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-emerald-400" />}
@@ -90,12 +90,12 @@ export function Sidebar({ view, setView, collapsed, setCollapsed }: {
       <div className="px-2 pb-4 space-y-0.5 border-t pt-3" style={{ borderColor: "var(--sidebar-border)" }}>
         {!collapsed && (
           <button onClick={() => setView("home")}
-            className="w-full flex items-center gap-3 px-2.5 py-2.5 rounded-lg text-sm text-white/50 hover:bg-white/5 hover:text-white transition-colors">
+            className="w-full flex items-center gap-3 px-2.5 py-2.5 rounded-lg text-sm text-white/50 hover:bg-white/5 hover:text-white transition-colors" data-testid="sidebar-public-site-link">
             <Globe size={17} />
             <span>Public Site</span>
           </button>
         )}
-        <button onClick={handleLogout} className="w-full flex items-center gap-3 px-2.5 py-2.5 rounded-lg text-sm text-white/50 hover:bg-white/5 hover:text-white transition-colors"
+        <button onClick={handleLogout} className="w-full flex items-center gap-3 px-2.5 py-2.5 rounded-lg text-sm text-white/50 hover:bg-white/5 hover:text-white transition-colors" data-testid="sidebar-logout-button"
           title={collapsed ? "Logout" : undefined}>
           <LogOut size={17} className="flex-shrink-0" />
           {!collapsed && <span>Logout</span>}

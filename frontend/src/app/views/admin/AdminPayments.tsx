@@ -53,19 +53,19 @@ export function AdminPayments({ showToast }: { showToast: (m: string, t: "succes
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5" data-testid="admin-payments">
       <div>
         <h2 className="text-xl font-semibold text-foreground" style={{ fontFamily: "Fraunces, serif" }}>Payment Verification</h2>
         <p className="text-sm text-muted-foreground">Review uploaded payment proofs and approve or decline.</p>
       </div>
       {loading ? (
-        <Card className="p-8 text-center text-sm text-muted-foreground">Loading payments...</Card>
+        <Card className="p-8 text-center text-sm text-muted-foreground" data-testid="admin-payments-loading">Loading payments...</Card>
       ) : payments.length === 0 ? (
-        <Card className="p-8 text-center text-sm text-muted-foreground">No payment proofs submitted yet.</Card>
+        <Card className="p-8 text-center text-sm text-muted-foreground" data-testid="admin-payments-empty">No payment proofs submitted yet.</Card>
       ) : (
         <div className="grid gap-4">
           {payments.map(p => (
-            <Card key={p.id} className="p-5">
+            <Card key={p.id} className="p-5" data-testid="admin-payments-card">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div className="flex gap-4">
                   <div className="w-10 h-10 rounded-lg bg-[#f0ece5] flex items-center justify-center flex-shrink-0">
@@ -86,15 +86,15 @@ export function AdminPayments({ showToast }: { showToast: (m: string, t: "succes
                 </div>
                 <div className="flex items-center gap-3">
                   <button onClick={() => viewFile(p)} disabled={busyId === p.id}
-                    className="bg-[#f6f4f0] rounded-lg px-3 py-2 flex items-center gap-2 text-[#1e5c3a] hover:bg-[#f0ece5] transition-colors disabled:opacity-50">
+                    className="bg-[#f6f4f0] rounded-lg px-3 py-2 flex items-center gap-2 text-[#1e5c3a] hover:bg-[#f0ece5] transition-colors disabled:opacity-50" data-testid="admin-payments-view-file-button">
                     <FileText size={12} className="text-muted-foreground" />
                     <span className="text-xs text-muted-foreground">{p.fileName}</span>
                     <Eye size={13} />
                   </button>
                   {p.status === "Pending" && (
                     <div className="flex gap-2">
-                      <Btn variant="primary" size="sm" disabled={busyId === p.id} onClick={() => approve(p)}><Check size={13} /> Approve</Btn>
-                      <Btn variant="danger" size="sm" disabled={busyId === p.id} onClick={() => setDeclining(p)}><X size={13} /> Decline</Btn>
+                      <Btn variant="primary" size="sm" disabled={busyId === p.id} onClick={() => approve(p)} data-testid="admin-payments-approve-button"><Check size={13} /> Approve</Btn>
+                      <Btn variant="danger" size="sm" disabled={busyId === p.id} onClick={() => setDeclining(p)} data-testid="admin-payments-decline-button"><X size={13} /> Decline</Btn>
                     </div>
                   )}
                 </div>
@@ -144,25 +144,25 @@ function DeclineModal({ payment, token, onClose, onDeclined, showToast }: {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4" onClick={onClose} data-testid="decline-payment-modal">
       <Card className="w-full max-w-sm p-6" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-semibold text-foreground">Decline Payment</h3>
-          <button onClick={onClose} className="text-muted-foreground hover:text-foreground"><X size={16} /></button>
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground" data-testid="decline-payment-close-button" aria-label="Close"><X size={16} /></button>
         </div>
         <p className="text-xs text-muted-foreground mb-3">{payment.orderCode} · {payment.buyerCompanyName}</p>
         <form onSubmit={submit} className="space-y-3">
           <div>
-            <label className="block text-xs font-medium text-foreground mb-1.5">Reason *</label>
-            <textarea required autoFocus rows={3} value={reason} onChange={e => setReason(e.target.value)}
+            <label className="block text-xs font-medium text-foreground mb-1.5" htmlFor="decline-payment-reason">Reason *</label>
+            <textarea required autoFocus rows={3} name="reason" id="decline-payment-reason" value={reason} onChange={e => setReason(e.target.value)} data-testid="decline-payment-reason-input"
               placeholder="e.g. Amount doesn't match the invoice, illegible receipt..."
               className="w-full px-3 py-2 rounded-lg bg-input-background border border-border text-sm outline-none focus:ring-2 focus:ring-[#1e5c3a]/30 resize-none" />
           </div>
           <div className="flex gap-2 pt-2">
-            <Btn type="submit" variant="danger" disabled={saving} className="flex-1 justify-center">
+            <Btn type="submit" variant="danger" disabled={saving} className="flex-1 justify-center" data-testid="decline-payment-submit-button">
               {saving ? "Declining..." : "Decline Payment"}
             </Btn>
-            <Btn type="button" variant="secondary" onClick={onClose}>Cancel</Btn>
+            <Btn type="button" variant="secondary" onClick={onClose} data-testid="decline-payment-cancel-button">Cancel</Btn>
           </div>
         </form>
       </Card>

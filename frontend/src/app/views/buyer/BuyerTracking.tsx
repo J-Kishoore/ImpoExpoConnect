@@ -21,20 +21,20 @@ export function BuyerTracking({ showToast }: { showToast: (m: string, t: "succes
   }, [token]);
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5" data-testid="buyer-tracking">
       <div>
         <h2 className="text-xl font-semibold text-foreground" style={{ fontFamily: "Fraunces, serif" }}>Order Tracking</h2>
         <p className="text-sm text-muted-foreground">Real-time status for all your orders.</p>
       </div>
       {loading ? (
-        <Card className="p-8 text-center text-sm text-muted-foreground">Loading orders...</Card>
+        <Card className="p-8 text-center text-sm text-muted-foreground" data-testid="buyer-tracking-loading">Loading orders...</Card>
       ) : orders.length === 0 ? (
-        <Card className="p-8 text-center text-sm text-muted-foreground">You haven't placed any orders yet.</Card>
+        <Card className="p-8 text-center text-sm text-muted-foreground" data-testid="buyer-tracking-empty">You haven't placed any orders yet.</Card>
       ) : (
         <div className="grid lg:grid-cols-3 gap-5">
-          <div className="space-y-2">
+          <div className="space-y-2" data-testid="buyer-tracking-order-list">
             {orders.map(o => (
-              <button key={o.id} onClick={() => setSelected(o)}
+              <button key={o.id} onClick={() => setSelected(o)} data-testid="buyer-tracking-order-item"
                 className={`w-full text-left p-4 rounded-lg border transition-all ${selected?.id === o.id ? "border-[#1e5c3a] bg-emerald-50/50" : "border-border bg-card hover:border-[#1e5c3a]/30"}`}>
                 <div className="flex items-center justify-between mb-1">
                   <p className="text-sm font-medium text-foreground">{o.productName}</p>
@@ -47,7 +47,7 @@ export function BuyerTracking({ showToast }: { showToast: (m: string, t: "succes
           </div>
           {selected && (
             <div className="lg:col-span-2">
-              <Card className="p-6">
+              <Card className="p-6" data-testid="buyer-tracking-detail-card">
                 <div className="flex items-center justify-between mb-6">
                   <div>
                     <h3 className="font-semibold text-foreground">{selected.productName}</h3>

@@ -42,11 +42,11 @@ export function NotificationsBell() {
   const preview = notifications.slice(0, MAX_PREVIEW);
 
   return (
-    <div ref={wrapRef} className="relative">
+    <div ref={wrapRef} className="relative" data-testid="notifications-bell">
       <button
         onClick={() => setOpen(o => !o)}
         className="relative p-2 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
-        title="Notifications"
+        title="Notifications" data-testid="notifications-bell-button" aria-label="Notifications"
       >
         <Bell size={17} />
         {unreadCount > 0 && (
@@ -57,14 +57,14 @@ export function NotificationsBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-card border border-border rounded-xl shadow-lg z-30 overflow-hidden">
+        <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-card border border-border rounded-xl shadow-lg z-30 overflow-hidden" data-testid="notifications-dropdown">
           <div className="flex items-center justify-between px-4 py-3 border-b border-border">
             <p className="text-sm font-semibold text-foreground">Notifications</p>
             <div className="flex items-center gap-2">
               <button
                 onClick={markAllRead}
                 disabled={unreadCount === 0}
-                className="text-xs text-[#1e5c3a] font-medium hover:underline disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+                className="text-xs text-[#1e5c3a] font-medium hover:underline disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1" data-testid="notifications-mark-all-read-button"
               >
                 <CheckCheck size={13} /> Mark all read
               </button>
@@ -95,7 +95,7 @@ export function NotificationsBell() {
 
           <button
             onClick={() => { setOpen(false); navigate(viewAllPath); }}
-            className="w-full px-4 py-2.5 border-t border-border text-center text-xs text-[#1e5c3a] font-medium hover:bg-[#f6f4f0] transition-colors"
+            className="w-full px-4 py-2.5 border-t border-border text-center text-xs text-[#1e5c3a] font-medium hover:bg-[#f6f4f0] transition-colors" data-testid="notifications-view-all-button"
           >
             View all notifications
           </button>

@@ -26,26 +26,26 @@ export function AdminDashboard({ setView }: { setView: (v: View) => void }) {
   }, [token]);
 
   if (loading) {
-    return <Card className="p-8 text-center text-sm text-muted-foreground">Loading dashboard...</Card>;
+    return <Card className="p-8 text-center text-sm text-muted-foreground" data-testid="admin-dashboard-loading">Loading dashboard...</Card>;
   }
   if (!stats) {
-    return <Card className="p-8 text-center text-sm text-muted-foreground">Unable to load dashboard data.</Card>;
+    return <Card className="p-8 text-center text-sm text-muted-foreground" data-testid="admin-dashboard-error">Unable to load dashboard data.</Card>;
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-testid="admin-dashboard">
       <div>
         <h2 className="text-xl font-semibold text-foreground" style={{ fontFamily: "Fraunces, serif" }}>Admin Overview</h2>
         <p className="text-sm text-muted-foreground">All operations summary</p>
       </div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard icon={ShoppingCart} label="Total Orders" value={String(stats.totalOrders)} sub={`+${stats.newOrdersThisWeek} this week`} color="green" />
-        <StatCard icon={Clock} label="Pending Approvals" value={String(stats.pendingApprovals)} sub="Needs action" color="amber" />
-        <StatCard icon={DollarSign} label="Revenue" value={formatCompactUsd(stats.completedRevenue)} sub="From completed orders" color="blue" />
-        <StatCard icon={Users} label="Active Buyers" value={String(stats.activeBuyers)} sub={`${stats.newBuyersThisMonth} new this month`} color="slate" />
+        <StatCard icon={ShoppingCart} label="Total Orders" value={String(stats.totalOrders)} sub={`+${stats.newOrdersThisWeek} this week`} color="green" data-testid="admin-dashboard-total-orders-card" />
+        <StatCard icon={Clock} label="Pending Approvals" value={String(stats.pendingApprovals)} sub="Needs action" color="amber" data-testid="admin-dashboard-pending-approvals-card" />
+        <StatCard icon={DollarSign} label="Revenue" value={formatCompactUsd(stats.completedRevenue)} sub="From completed orders" color="blue" data-testid="admin-dashboard-revenue-card" />
+        <StatCard icon={Users} label="Active Buyers" value={String(stats.activeBuyers)} sub={`${stats.newBuyersThisMonth} new this month`} color="slate" data-testid="admin-dashboard-active-buyers-card" />
       </div>
       <div className="grid lg:grid-cols-2 gap-6">
-        <Card className="p-5">
+        <Card className="p-5" data-testid="admin-dashboard-revenue-chart-card">
           <h3 className="font-semibold text-sm text-foreground mb-4">Monthly Revenue (Completed Orders)</h3>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={stats.monthlyRevenue}>
@@ -57,7 +57,7 @@ export function AdminDashboard({ setView }: { setView: (v: View) => void }) {
             </BarChart>
           </ResponsiveContainer>
         </Card>
-        <Card className="p-5">
+        <Card className="p-5" data-testid="admin-dashboard-order-volume-chart-card">
           <h3 className="font-semibold text-sm text-foreground mb-4">Order Volume</h3>
           <ResponsiveContainer width="100%" height={200}>
             <LineChart data={stats.monthlyRevenue}>
@@ -71,7 +71,7 @@ export function AdminDashboard({ setView }: { setView: (v: View) => void }) {
         </Card>
       </div>
       <div className="grid lg:grid-cols-2 gap-6">
-        <Card className="p-5">
+        <Card className="p-5" data-testid="admin-dashboard-pending-actions-card">
           <h3 className="font-semibold text-sm text-foreground mb-4">Pending Actions</h3>
           {stats.pendingActions.length === 0 ? (
             <p className="text-sm text-muted-foreground">Nothing needs your attention right now.</p>
@@ -79,7 +79,7 @@ export function AdminDashboard({ setView }: { setView: (v: View) => void }) {
             <div className="space-y-2">
               {stats.pendingActions.map(a => (
                 <button key={a.id} onClick={() => setView(a.target)}
-                  className="w-full flex items-center justify-between p-3 rounded-lg bg-[#f6f4f0] hover:bg-[#f0ece5] cursor-pointer transition-colors text-left">
+                  className="w-full flex items-center justify-between p-3 rounded-lg bg-[#f6f4f0] hover:bg-[#f0ece5] cursor-pointer transition-colors text-left" data-testid="admin-dashboard-pending-action-item">
                   <div className="flex items-center gap-2">
                     <div className={`w-1.5 h-1.5 rounded-full ${a.urgency === "high" ? "bg-red-500" : "bg-amber-500"}`} />
                     <p className="text-sm text-foreground">{a.label}</p>
@@ -90,7 +90,7 @@ export function AdminDashboard({ setView }: { setView: (v: View) => void }) {
             </div>
           )}
         </Card>
-        <Card className="p-5">
+        <Card className="p-5" data-testid="admin-dashboard-top-products-card">
           <h3 className="font-semibold text-sm text-foreground mb-4">Top Products by Volume</h3>
           {stats.topProducts.length === 0 ? (
             <p className="text-sm text-muted-foreground">No order volume yet.</p>

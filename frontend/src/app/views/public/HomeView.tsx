@@ -5,9 +5,9 @@ import { Badge, Btn, Card } from "../../components/shared";
 
 export function HomeView({ setView }: { setView: (v: View) => void }) {
   return (
-    <div>
+    <div data-testid="home-page">
       {/* Hero */}
-      <section className="relative overflow-hidden bg-[#1a2e1f]" style={{ minHeight: 540 }}>
+      <section className="relative overflow-hidden bg-[#1a2e1f]" style={{ minHeight: 540 }} data-testid="home-hero">
         <div className="absolute inset-0">
           <img src="https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=1400&h=600&fit=crop&auto=format"
             alt="Agricultural commodities" className="w-full h-full object-cover opacity-25" />
@@ -26,11 +26,11 @@ export function HomeView({ setView }: { setView: (v: View) => void }) {
               Makgrow Impex connects global buyers with certified Indian agricultural suppliers. Streamlined bulk ordering, transparent pricing, and end-to-end trade documentation.
             </p>
             <div className="flex flex-wrap gap-3">
-              <Btn variant="accent" size="lg" onClick={() => setView("products")}>
+              <Btn variant="accent" size="lg" onClick={() => setView("products")} data-testid="home-browse-products-button">
                 <Package size={16} /> Browse Products
               </Btn>
               <button onClick={() => setView("buyer-order-form")}
-                className="px-6 py-3 rounded border border-white/30 text-white text-base font-medium hover:bg-white/10 transition-colors flex items-center gap-2">
+                className="px-6 py-3 rounded border border-white/30 text-white text-base font-medium hover:bg-white/10 transition-colors flex items-center gap-2" data-testid="home-request-bulk-order-button">
                 <ShoppingCart size={16} /> Request Bulk Order
               </button>
             </div>
@@ -82,7 +82,7 @@ export function HomeView({ setView }: { setView: (v: View) => void }) {
               <p className="text-[#c47f2e] text-sm font-medium uppercase tracking-widest mb-1">Our Products</p>
               <h2 className="text-2xl font-semibold text-foreground" style={{ fontFamily: "Fraunces, serif" }}>Featured Commodities</h2>
             </div>
-            <Btn variant="ghost" onClick={() => setView("products")}>View All <ArrowRight size={14} /></Btn>
+            <Btn variant="ghost" onClick={() => setView("products")} data-testid="home-view-all-products-link">View All <ArrowRight size={14} /></Btn>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {products.slice(0, 4).map(p => (
@@ -113,9 +113,9 @@ export function HomeView({ setView }: { setView: (v: View) => void }) {
             <p className="text-emerald-200 text-sm">Register as a buyer and get access to exclusive bulk pricing and dedicated support.</p>
           </div>
           <div className="flex gap-3 flex-shrink-0">
-            <Btn variant="accent" size="lg" onClick={() => setView("contact")}>Get in Touch</Btn>
+            <Btn variant="accent" size="lg" onClick={() => setView("contact")} data-testid="home-get-in-touch-button">Get in Touch</Btn>
             <button onClick={() => setView("buyer-dashboard")}
-              className="px-6 py-3 rounded border border-emerald-400 text-emerald-200 text-base font-medium hover:bg-emerald-800 transition-colors">
+              className="px-6 py-3 rounded border border-emerald-400 text-emerald-200 text-base font-medium hover:bg-emerald-800 transition-colors" data-testid="home-buyer-portal-button">
               Buyer Portal
             </button>
           </div>
@@ -123,7 +123,7 @@ export function HomeView({ setView }: { setView: (v: View) => void }) {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border bg-white py-10">
+      <footer className="border-t border-border bg-white py-10" data-testid="home-footer">
         <div className="max-w-7xl mx-auto px-5 grid sm:grid-cols-3 gap-8">
           <div>
             <div className="flex items-center gap-2 mb-3">
@@ -136,7 +136,7 @@ export function HomeView({ setView }: { setView: (v: View) => void }) {
             <p className="text-xs font-semibold text-foreground uppercase tracking-wide mb-3">Quick Links</p>
             <div className="space-y-1.5">
               {["Products", "About Us", "Contact"].map(l => (
-                <button key={l} className="block text-xs text-muted-foreground hover:text-foreground transition-colors">{l}</button>
+                <button key={l} className="block text-xs text-muted-foreground hover:text-foreground transition-colors" data-testid={`home-footer-link-${l.toLowerCase().replace(/\s+/g, "-")}`}>{l}</button>
               ))}
             </div>
           </div>

@@ -74,7 +74,7 @@ export function AdminBuyers({ showToast }: { showToast: (m: string, t: "success"
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5" data-testid="admin-buyers">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h2 className="text-xl font-semibold text-foreground" style={{ fontFamily: "Fraunces, serif" }}>Buyer Management</h2>
@@ -82,18 +82,18 @@ export function AdminBuyers({ showToast }: { showToast: (m: string, t: "success"
         </div>
         <div className="flex items-center gap-2 bg-card rounded-lg border border-border px-3 py-2">
           <Search size={14} className="text-muted-foreground" />
-          <input value={search} onChange={e => setSearch(e.target.value)}
-            className="w-36 text-sm bg-transparent outline-none placeholder:text-muted-foreground" placeholder="Search buyers..." />
+          <input value={search} onChange={e => setSearch(e.target.value)} name="admin-buyers-search" aria-label="Search buyers"
+            className="w-36 text-sm bg-transparent outline-none placeholder:text-muted-foreground" placeholder="Search buyers..." data-testid="admin-buyers-search-input" />
         </div>
       </div>
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden" data-testid="admin-buyers-table-card">
         {loading ? (
           <div className="p-8 text-center text-sm text-muted-foreground">Loading buyers...</div>
         ) : filtered.length === 0 ? (
           <div className="p-8 text-center text-sm text-muted-foreground">No buyers found.</div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm" data-testid="admin-buyers-table">
               <thead>
                 <tr className="border-b border-border bg-[#f6f4f0]">
                   <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide">Company</th>
@@ -106,7 +106,7 @@ export function AdminBuyers({ showToast }: { showToast: (m: string, t: "success"
               </thead>
               <tbody className="divide-y divide-border">
                 {filtered.map(b => (
-                  <tr key={b.id} className="hover:bg-[#faf9f7] transition-colors">
+                  <tr key={b.id} className="hover:bg-[#faf9f7] transition-colors" data-testid="admin-buyers-row">
                     <td className="px-4 py-3 font-medium text-foreground">{b.companyName}</td>
                     <td className="px-4 py-3 text-muted-foreground">{b.contactName}</td>
                     <td className="px-4 py-3 text-muted-foreground">{b.country || "—"}</td>
@@ -115,23 +115,23 @@ export function AdminBuyers({ showToast }: { showToast: (m: string, t: "success"
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-1">
                         <button onClick={() => setEditing(b)} disabled={busyId === b.id}
-                          className="p-1.5 rounded hover:bg-[#edeae3] text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50" title="Edit">
+                          className="p-1.5 rounded hover:bg-[#edeae3] text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50" title="Edit" data-testid="admin-buyers-edit-button" aria-label="Edit buyer">
                           <Edit2 size={14} />
                         </button>
                         {b.status === "Active" ? (
                           <button onClick={() => setStatus(b, "Suspended")} disabled={busyId === b.id}
-                            className="p-1.5 rounded hover:bg-red-50 text-muted-foreground hover:text-red-600 transition-colors disabled:opacity-50" title="Suspend">
+                            className="p-1.5 rounded hover:bg-red-50 text-muted-foreground hover:text-red-600 transition-colors disabled:opacity-50" title="Suspend" data-testid="admin-buyers-suspend-button" aria-label="Suspend buyer">
                             <XCircle size={14} />
                           </button>
                         ) : (
                           <button onClick={() => setStatus(b, "Active")} disabled={busyId === b.id}
                             className="p-1.5 rounded hover:bg-emerald-50 text-muted-foreground hover:text-emerald-600 transition-colors disabled:opacity-50"
-                            title={b.status === "Pending" ? "Approve" : "Reactivate"}>
+                            title={b.status === "Pending" ? "Approve" : "Reactivate"} data-testid="admin-buyers-approve-button" aria-label={b.status === "Pending" ? "Approve buyer" : "Reactivate buyer"}>
                             <CheckCircle size={14} />
                           </button>
                         )}
                         <button onClick={() => handleDelete(b)} disabled={busyId === b.id}
-                          className="p-1.5 rounded hover:bg-red-50 text-muted-foreground hover:text-red-600 transition-colors disabled:opacity-50" title="Delete">
+                          className="p-1.5 rounded hover:bg-red-50 text-muted-foreground hover:text-red-600 transition-colors disabled:opacity-50" title="Delete" data-testid="admin-buyers-delete-button" aria-label="Delete buyer">
                           <Trash2 size={14} />
                         </button>
                       </div>
@@ -147,10 +147,10 @@ export function AdminBuyers({ showToast }: { showToast: (m: string, t: "success"
         <div className="flex items-center justify-between px-1">
           <p className="text-xs text-muted-foreground">Page {pageIndex + 1}</p>
           <div className="flex gap-2">
-            <Btn variant="secondary" size="sm" disabled={pageIndex === 0 || loading} onClick={() => setPageIndex(i => i - 1)}>
+            <Btn variant="secondary" size="sm" disabled={pageIndex === 0 || loading} onClick={() => setPageIndex(i => i - 1)} data-testid="admin-buyers-prev-page-button">
               <ChevronLeft size={14} /> Prev
             </Btn>
-            <Btn variant="secondary" size="sm" disabled={!hasMore || loading} onClick={() => setPageIndex(i => i + 1)}>
+            <Btn variant="secondary" size="sm" disabled={!hasMore || loading} onClick={() => setPageIndex(i => i + 1)} data-testid="admin-buyers-next-page-button">
               Next <ChevronRight size={14} />
             </Btn>
           </div>
@@ -202,43 +202,43 @@ function EditBuyerModal({ buyer, token, onClose, onSaved, showToast }: {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4" onClick={onClose} data-testid="edit-buyer-modal">
       <Card className="w-full max-w-md p-6" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-semibold text-foreground">Edit Buyer</h3>
-          <button onClick={onClose} className="text-muted-foreground hover:text-foreground"><X size={16} /></button>
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground" data-testid="edit-buyer-close-button" aria-label="Close"><X size={16} /></button>
         </div>
         <form onSubmit={submit} className="space-y-3">
           <div>
-            <label className="block text-xs font-medium text-foreground mb-1.5">Company Name</label>
-            <input required value={companyName} onChange={e => setCompanyName(e.target.value)}
+            <label className="block text-xs font-medium text-foreground mb-1.5" htmlFor="edit-buyer-company-name">Company Name</label>
+            <input required name="companyName" id="edit-buyer-company-name" value={companyName} onChange={e => setCompanyName(e.target.value)} data-testid="edit-buyer-company-name-input"
               className="w-full px-3 py-2 rounded-lg bg-input-background border border-border text-sm outline-none focus:ring-2 focus:ring-[#1e5c3a]/30" />
           </div>
           <div>
-            <label className="block text-xs font-medium text-foreground mb-1.5">Contact Name</label>
-            <input required value={contactName} onChange={e => setContactName(e.target.value)}
+            <label className="block text-xs font-medium text-foreground mb-1.5" htmlFor="edit-buyer-contact-name">Contact Name</label>
+            <input required name="contactName" id="edit-buyer-contact-name" value={contactName} onChange={e => setContactName(e.target.value)} data-testid="edit-buyer-contact-name-input"
               className="w-full px-3 py-2 rounded-lg bg-input-background border border-border text-sm outline-none focus:ring-2 focus:ring-[#1e5c3a]/30" />
           </div>
           <div>
-            <label className="block text-xs font-medium text-foreground mb-1.5">Email</label>
-            <input required type="email" value={email} onChange={e => setEmail(e.target.value)}
+            <label className="block text-xs font-medium text-foreground mb-1.5" htmlFor="edit-buyer-email">Email</label>
+            <input required type="email" name="email" id="edit-buyer-email" value={email} onChange={e => setEmail(e.target.value)} data-testid="edit-buyer-email-input"
               className="w-full px-3 py-2 rounded-lg bg-input-background border border-border text-sm outline-none focus:ring-2 focus:ring-[#1e5c3a]/30" />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-foreground mb-1.5">Phone</label>
-              <input value={phone} onChange={e => setPhone(e.target.value)}
+              <label className="block text-xs font-medium text-foreground mb-1.5" htmlFor="edit-buyer-phone">Phone</label>
+              <input name="phone" id="edit-buyer-phone" value={phone} onChange={e => setPhone(e.target.value)} data-testid="edit-buyer-phone-input"
                 className="w-full px-3 py-2 rounded-lg bg-input-background border border-border text-sm outline-none focus:ring-2 focus:ring-[#1e5c3a]/30" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-foreground mb-1.5">Country</label>
-              <input value={country} onChange={e => setCountry(e.target.value)}
+              <label className="block text-xs font-medium text-foreground mb-1.5" htmlFor="edit-buyer-country">Country</label>
+              <input name="country" id="edit-buyer-country" value={country} onChange={e => setCountry(e.target.value)} data-testid="edit-buyer-country-input"
                 className="w-full px-3 py-2 rounded-lg bg-input-background border border-border text-sm outline-none focus:ring-2 focus:ring-[#1e5c3a]/30" />
             </div>
           </div>
           <div>
-            <label className="block text-xs font-medium text-foreground mb-1.5">Status</label>
-            <select value={status} onChange={e => setStatus(e.target.value as BuyerProfile["status"])}
+            <label className="block text-xs font-medium text-foreground mb-1.5" htmlFor="edit-buyer-status">Status</label>
+            <select id="edit-buyer-status" name="status" value={status} onChange={e => setStatus(e.target.value as BuyerProfile["status"])} data-testid="edit-buyer-status-select"
               className="w-full px-3 py-2 rounded-lg bg-input-background border border-border text-sm outline-none focus:ring-2 focus:ring-[#1e5c3a]/30">
               <option value="Pending">Pending</option>
               <option value="Active">Active</option>
@@ -246,10 +246,10 @@ function EditBuyerModal({ buyer, token, onClose, onSaved, showToast }: {
             </select>
           </div>
           <div className="flex gap-2 pt-2">
-            <Btn type="submit" variant="primary" disabled={saving} className="flex-1 justify-center">
+            <Btn type="submit" variant="primary" disabled={saving} className="flex-1 justify-center" data-testid="edit-buyer-save-button">
               {saving ? "Saving..." : "Save Changes"}
             </Btn>
-            <Btn type="button" variant="secondary" onClick={onClose}>Cancel</Btn>
+            <Btn type="button" variant="secondary" onClick={onClose} data-testid="edit-buyer-cancel-button">Cancel</Btn>
           </div>
         </form>
       </Card>

@@ -3,17 +3,17 @@ import { Badge, Btn, Card } from "../../components/shared";
 
 export function AdminReports({ showToast }: { showToast: (m: string, t: "success" | "error" | "info") => void }) {
   return (
-    <div className="space-y-5">
+    <div className="space-y-5" data-testid="admin-reports">
       <div>
         <h2 className="text-xl font-semibold text-foreground" style={{ fontFamily: "Fraunces, serif" }}>Reports</h2>
         <p className="text-sm text-muted-foreground">Generate and export business reports.</p>
       </div>
-      <Card className="p-5">
+      <Card className="p-5" data-testid="admin-reports-generate-card">
         <h3 className="text-sm font-semibold text-foreground mb-4">Generate Report</h3>
         <div className="grid sm:grid-cols-4 gap-3 mb-4">
           <div>
-            <label className="block text-xs font-medium text-foreground mb-1.5">Report Type</label>
-            <select className="w-full px-3 py-2.5 rounded-lg bg-input-background border border-border text-sm outline-none focus:ring-2 focus:ring-[#1e5c3a]/30">
+            <label className="block text-xs font-medium text-foreground mb-1.5" htmlFor="admin-reports-type">Report Type</label>
+            <select id="admin-reports-type" name="reportType" className="w-full px-3 py-2.5 rounded-lg bg-input-background border border-border text-sm outline-none focus:ring-2 focus:ring-[#1e5c3a]/30" data-testid="admin-reports-type-select">
               <option>Order Summary</option>
               <option>Revenue Report</option>
               <option>Buyer Activity</option>
@@ -22,29 +22,29 @@ export function AdminReports({ showToast }: { showToast: (m: string, t: "success
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-foreground mb-1.5">From Date</label>
-            <input type="date" defaultValue="2024-06-01" className="w-full px-3 py-2.5 rounded-lg bg-input-background border border-border text-sm outline-none focus:ring-2 focus:ring-[#1e5c3a]/30" />
+            <label className="block text-xs font-medium text-foreground mb-1.5" htmlFor="admin-reports-from-date">From Date</label>
+            <input type="date" name="fromDate" id="admin-reports-from-date" defaultValue="2024-06-01" className="w-full px-3 py-2.5 rounded-lg bg-input-background border border-border text-sm outline-none focus:ring-2 focus:ring-[#1e5c3a]/30" data-testid="admin-reports-from-date-input" />
           </div>
           <div>
-            <label className="block text-xs font-medium text-foreground mb-1.5">To Date</label>
-            <input type="date" defaultValue="2024-06-21" className="w-full px-3 py-2.5 rounded-lg bg-input-background border border-border text-sm outline-none focus:ring-2 focus:ring-[#1e5c3a]/30" />
+            <label className="block text-xs font-medium text-foreground mb-1.5" htmlFor="admin-reports-to-date">To Date</label>
+            <input type="date" name="toDate" id="admin-reports-to-date" defaultValue="2024-06-21" className="w-full px-3 py-2.5 rounded-lg bg-input-background border border-border text-sm outline-none focus:ring-2 focus:ring-[#1e5c3a]/30" data-testid="admin-reports-to-date-input" />
           </div>
           <div className="flex items-end gap-2">
-            <Btn variant="primary" onClick={() => showToast("Generating report...", "info")}><RefreshCw size={14} /> Generate</Btn>
+            <Btn variant="primary" onClick={() => showToast("Generating report...", "info")} data-testid="admin-reports-generate-button"><RefreshCw size={14} /> Generate</Btn>
           </div>
         </div>
         <div className="flex gap-2">
-          <Btn variant="secondary" size="sm" onClick={() => showToast("PDF exported.", "success")}><FileDown size={13} /> Export PDF</Btn>
-          <Btn variant="secondary" size="sm" onClick={() => showToast("CSV exported.", "success")}><Download size={13} /> Export CSV</Btn>
+          <Btn variant="secondary" size="sm" onClick={() => showToast("PDF exported.", "success")} data-testid="admin-reports-export-pdf-button"><FileDown size={13} /> Export PDF</Btn>
+          <Btn variant="secondary" size="sm" onClick={() => showToast("CSV exported.", "success")} data-testid="admin-reports-export-csv-button"><Download size={13} /> Export CSV</Btn>
         </div>
       </Card>
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden" data-testid="admin-reports-preview-card">
         <div className="px-5 py-3 border-b border-border bg-[#f6f4f0] flex items-center justify-between">
           <h3 className="text-sm font-semibold text-foreground">Order Summary — June 2024</h3>
           <Badge label="Generated" />
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full text-sm" data-testid="admin-reports-table">
             <thead>
               <tr className="border-b border-border">
                 <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide">Order ID</th>
@@ -62,7 +62,7 @@ export function AdminReports({ showToast }: { showToast: (m: string, t: "success
                 { id: "ORD-2024-0035", buyer: "Al Fajr Trading", product: "Wheat Flour", vol: "8 MT", value: "$260,000", status: "Completed" },
                 { id: "ORD-2024-0031", buyer: "Gulf Commodity Hub", product: "Green Gram", vol: "2 MT", value: "$156,000", status: "Approved" },
               ].map(r => (
-                <tr key={r.id} className="hover:bg-[#faf9f7] transition-colors">
+                <tr key={r.id} className="hover:bg-[#faf9f7] transition-colors" data-testid="admin-reports-row">
                   <td className="px-4 py-3 font-mono text-xs font-medium text-foreground">{r.id}</td>
                   <td className="px-4 py-3 text-foreground">{r.buyer}</td>
                   <td className="px-4 py-3 text-muted-foreground">{r.product}</td>

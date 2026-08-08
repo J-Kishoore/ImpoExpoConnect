@@ -85,25 +85,25 @@ export function BuyerPayment({ showToast }: { showToast: (m: string, t: "success
   };
 
   return (
-    <div className="space-y-5 max-w-2xl">
+    <div className="space-y-5 max-w-2xl" data-testid="buyer-payment">
       <div>
         <h2 className="text-xl font-semibold text-foreground" style={{ fontFamily: "Fraunces, serif" }}>Payment Upload</h2>
         <p className="text-sm text-muted-foreground">Upload bank transfer proof or payment receipt for verification.</p>
       </div>
-      <Card className="p-5">
+      <Card className="p-5" data-testid="buyer-payment-submit-card">
         <h3 className="text-sm font-semibold text-foreground mb-3">Submit Payment Proof</h3>
         {loading ? (
           <p className="text-sm text-muted-foreground">Loading...</p>
         ) : orders.length === 0 ? (
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-start gap-3">
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-start gap-3" data-testid="buyer-payment-empty">
             <AlertCircle size={16} className="text-amber-600 mt-0.5 flex-shrink-0" />
             <p className="text-sm text-amber-900">No quoted orders awaiting payment yet.</p>
           </div>
         ) : (
           <>
             <div className="mb-4">
-              <label className="block text-xs font-medium text-foreground mb-1.5">Order</label>
-              <select value={orderId} onChange={e => setOrderId(e.target.value)}
+              <label className="block text-xs font-medium text-foreground mb-1.5" htmlFor="buyer-payment-order-select">Order</label>
+              <select id="buyer-payment-order-select" name="orderId" value={orderId} onChange={e => setOrderId(e.target.value)} data-testid="buyer-payment-order-select"
                 className="w-full px-3 py-2.5 rounded-lg bg-input-background border border-border text-sm outline-none focus:ring-2 focus:ring-[#1e5c3a]/30">
                 {orders.map(o => (
                   <option key={o.id} value={o.id}>{o.orderCode} · {o.productName} · {o.quotedAmount}</option>
@@ -133,16 +133,16 @@ export function BuyerPayment({ showToast }: { showToast: (m: string, t: "success
                 onDragLeave={() => setDragOver(false)}
                 onDrop={handleDrop}
                 onClick={() => fileRef.current?.click()}
-                className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${dragOver ? "border-[#1e5c3a] bg-emerald-50/50" : "border-[#e5e1d8] hover:border-[#1e5c3a]/40 hover:bg-[#f6f4f0]"}`}>
+                className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${dragOver ? "border-[#1e5c3a] bg-emerald-50/50" : "border-[#e5e1d8] hover:border-[#1e5c3a]/40 hover:bg-[#f6f4f0]"}`} data-testid="buyer-payment-dropzone">
                 <Upload size={24} className={`mx-auto mb-2 ${dragOver ? "text-[#1e5c3a]" : "text-muted-foreground"}`} />
                 <p className="text-sm font-medium text-foreground mb-0.5">
                   {selectedFile ? selectedFile.name : "Drag & drop or click to upload"}
                 </p>
                 <p className="text-xs text-muted-foreground">PDF, JPG, PNG up to 10MB</p>
-                <input ref={fileRef} type="file" className="hidden" accept=".pdf,.jpg,.jpeg,.png" onChange={handleFile} />
+                <input ref={fileRef} type="file" className="hidden" accept=".pdf,.jpg,.jpeg,.png" onChange={handleFile} aria-label="Upload payment proof" data-testid="buyer-payment-file-input" />
               </div>
               {selectedFile && (
-                <div className="mt-3 flex items-center justify-between p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
+                <div className="mt-3 flex items-center justify-between p-3 bg-emerald-50 border border-emerald-200 rounded-lg" data-testid="buyer-payment-selected-file">
                   <div className="flex items-center gap-2">
                     <FileText size={14} className="text-emerald-700" />
                     <span className="text-xs font-medium text-emerald-800">{selectedFile.name}</span>
@@ -150,21 +150,21 @@ export function BuyerPayment({ showToast }: { showToast: (m: string, t: "success
                   <Badge label="Ready" />
                 </div>
               )}
-              <Btn variant="primary" className="mt-4" disabled={!selectedFile || submitting} onClick={submit}>
+              <Btn variant="primary" className="mt-4" disabled={!selectedFile || submitting} onClick={submit} data-testid="buyer-payment-submit-button">
                 {submitting ? "Submitting..." : "Submit for Verification"}
               </Btn>
             </div>
           </>
         )}
       </Card>
-      <Card className="p-5">
+      <Card className="p-5" data-testid="buyer-payment-history-card">
         <h3 className="text-sm font-semibold text-foreground mb-3">Payment History</h3>
         {payments.length === 0 ? (
           <p className="text-sm text-muted-foreground">No payment proofs submitted yet.</p>
         ) : (
           <div className="space-y-2">
             {payments.map(p => (
-              <div key={p.id} className="p-3 rounded-lg bg-[#f6f4f0]">
+              <div key={p.id} className="p-3 rounded-lg bg-[#f6f4f0]" data-testid="buyer-payment-history-item">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-foreground">{p.orderCode}</p>
@@ -174,7 +174,7 @@ export function BuyerPayment({ showToast }: { showToast: (m: string, t: "success
                     <span className="text-sm font-semibold text-foreground" style={{ fontFamily: "JetBrains Mono, monospace" }}>{p.amount || "—"}</span>
                     <Badge label={p.status} />
                     <button onClick={() => viewFile(p)} disabled={viewingId === p.id}
-                      className="p-1.5 rounded hover:bg-[#edeae3] text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50" title="View file">
+                      className="p-1.5 rounded hover:bg-[#edeae3] text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50" title="View file" data-testid="buyer-payment-view-file-button" aria-label="View file">
                       <Eye size={14} />
                     </button>
                   </div>
