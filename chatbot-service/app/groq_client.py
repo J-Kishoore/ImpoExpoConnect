@@ -1,9 +1,12 @@
 import json
+import logging
 
 from groq import Groq
 
 from . import config, tools
 from .auth import Identity
+
+logger = logging.getLogger("chatbot")
 
 client = Groq(api_key=config.GROQ_API_KEY)
 
@@ -58,10 +61,14 @@ def _build_tools(identity: Identity | None):
 def _run_tool(registry: dict, name: str, arguments: dict):
     fn = registry.get(name)
     if fn is None:
+        logger.warning("Model requested unknown/unauthorized tool: %s", name)
         return {"error": f"Unknown or unauthorized tool: {name}"}
     try:
-        return fn(**arguments)
+        result = fn(**arguments)
+        logger.info("tool %s(%s) -> %s", name, arguments, result)
+        return result
     except Exception as exc:  # tool execution failure shouldn't crash the chat
+        logger.exception("tool %s(%s) raised an exception", name, arguments)
         return {"error": str(exc)}
 
 
@@ -76,7 +83,7 @@ def get_reply(message: str, history: list[dict], identity: Identity | None = Non
             messages.append({"role": role, "content": content})
     messages.append({"role": "user", "content": message})
 
-    for _ in range(MAX_TOOL_ROUNDS):
+    for round_num in range(MAX_TOOL_ROUNDS):
         response = client.chat.completions.create(
             model=config.GROQ_MODEL,
             messages=messages,
@@ -114,4 +121,9 @@ def get_reply(message: str, history: list[dict], identity: Identity | None = Non
                 }
             )
 
-    return "Sorry, I'm having trouble looking that up right now. Please try again."
+        logger.info("round %s/%s used tool(s), asking again", round_num + 1, MAX_TOOL_ROUNDS)
+
+    logger.warning("hit MAX_TOOL_ROUNDS (%s) without a final answer, forcing a text-only reply", MAX_TOOL_ROUNDS)
+    response = client.chat.completions.create(model=config.GROQ_MODEL, messages=messages, tool_choice="none")
+    content = response.choices[0].message.content
+    return content or "Sorry, I'm having trouble looking that up right now. Please try again."

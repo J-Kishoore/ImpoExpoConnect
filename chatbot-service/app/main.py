@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -6,6 +8,8 @@ from . import config, conversations
 from .auth import get_identity
 from .groq_client import get_reply
 from .owner import resolve_owner
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 
 app = FastAPI(title="ImpoExpoConnect Chatbot Service")
 
