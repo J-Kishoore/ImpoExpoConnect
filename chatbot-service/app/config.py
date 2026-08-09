@@ -16,7 +16,7 @@ PORT = int(os.environ.get("PORT", 8000))
 CORS_ORIGINS = [origin.strip() for origin in os.environ.get("CORS_ORIGIN", "http://localhost:5173").split(",") if origin.strip()]
 
 GROQ_API_KEY = os.environ["GROQ_API_KEY"]
-GROQ_MODEL = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
+GROQ_MODEL = os.environ.get("GROQ_MODEL", "llama-3.1-8b-instant")
 
 JWT_SECRET = os.environ["JWT_SECRET"]
 
