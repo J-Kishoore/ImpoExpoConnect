@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-REQUIRED = ["GROQ_API_KEY", "FIREBASE_PROJECT_ID", "FIREBASE_CLIENT_EMAIL", "FIREBASE_PRIVATE_KEY"]
+REQUIRED = ["GROQ_API_KEY", "JWT_SECRET", "FIREBASE_PROJECT_ID", "FIREBASE_CLIENT_EMAIL", "FIREBASE_PRIVATE_KEY"]
 missing = [key for key in REQUIRED if not os.environ.get(key)]
 if missing:
     raise RuntimeError(
@@ -17,6 +17,8 @@ CORS_ORIGINS = [origin.strip() for origin in os.environ.get("CORS_ORIGIN", "http
 
 GROQ_API_KEY = os.environ["GROQ_API_KEY"]
 GROQ_MODEL = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
+
+JWT_SECRET = os.environ["JWT_SECRET"]
 
 FIREBASE_PROJECT_ID = os.environ["FIREBASE_PROJECT_ID"]
 FIREBASE_CLIENT_EMAIL = os.environ["FIREBASE_CLIENT_EMAIL"]
