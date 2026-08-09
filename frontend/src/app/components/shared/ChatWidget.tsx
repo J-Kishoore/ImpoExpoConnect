@@ -1,18 +1,37 @@
 import { useState } from "react";
 import { MessageCircle, X, Send, Paperclip } from "lucide-react";
 import { chatMessages } from "../../data";
+import { sendChatMessage } from "../../lib/chatbotApi";
 
 export function ChatWidget() {
   const [open, setOpen] = useState(false);
   const [msgs, setMsgs] = useState(chatMessages);
   const [input, setInput] = useState("");
+  const [sending, setSending] = useState(false);
 
-  const send = () => {
-    if (!input.trim()) return;
-    const userMsg = { id: msgs.length + 1, from: "user", text: input, time: "Now" };
-    const botMsg = { id: msgs.length + 2, from: "assistant", text: "Thank you for your query. Our team will follow up shortly, or you can place a bulk order request directly from the catalog.", time: "Now" };
-    setMsgs([...msgs, userMsg, botMsg]);
+  const send = async () => {
+    if (!input.trim() || sending) return;
+    const text = input;
+    const userMsg = { id: msgs.length + 1, from: "user", text, time: "Now" };
+    const nextMsgs = [...msgs, userMsg];
+    setMsgs(nextMsgs);
     setInput("");
+    setSending(true);
+    try {
+      const history = nextMsgs.slice(-10).map(m => ({
+        role: (m.from === "user" ? "user" : "assistant") as "user" | "assistant",
+        content: m.text,
+      }));
+      const { reply } = await sendChatMessage(text, history);
+      setMsgs(current => [...current, { id: current.length + 1, from: "assistant", text: reply, time: "Now" }]);
+    } catch {
+      setMsgs(current => [
+        ...current,
+        { id: current.length + 1, from: "assistant", text: "Sorry, I'm having trouble connecting right now. Please try again shortly.", time: "Now" },
+      ]);
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -40,6 +59,13 @@ export function ChatWidget() {
                 </div>
               </div>
             ))}
+            {sending && (
+              <div className="flex justify-start" data-testid="chat-widget-typing">
+                <div className="max-w-[80%] rounded-xl px-3 py-2 text-sm bg-white text-muted-foreground border border-border rounded-bl-sm">
+                  Typing...
+                </div>
+              </div>
+            )}
           </div>
           <div className="p-2 border-t border-border bg-white flex items-center gap-2">
             <button className="p-1.5 text-muted-foreground hover:text-foreground" data-testid="chat-widget-attach-button" aria-label="Attach file"><Paperclip size={15} /></button>
