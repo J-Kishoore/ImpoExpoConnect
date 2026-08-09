@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { MouseEvent } from "react";
 import { MessageCircle, X, Send, Paperclip, History, Plus, ArrowLeft, Trash2 } from "lucide-react";
 import {
@@ -32,6 +32,11 @@ export function ChatWidget() {
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [loadingMessages, setLoadingMessages] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (open && view === "chat") messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [msgs, sending, loadingMessages, view, open]);
 
   useEffect(() => {
     let cancelled = false;
@@ -186,6 +191,7 @@ export function ChatWidget() {
                   </div>
                 </div>
               )}
+              <div ref={messagesEndRef} />
             </div>
           )}
 
