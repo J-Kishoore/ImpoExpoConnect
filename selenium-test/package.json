@@ -1,17 +1,28 @@
 {
-  "name": "selenium-test",
+  "name": "selenium-webdriver-js-tests-v2",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Selenium WebDriver (JS) scripts converted from Selenium IDE Python exports (New.zip)",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test:adminAcceptBuyerRegistration": "node test_adminAcceptBuyerRegistration.js",
+    "test:adminAddCategory": "node test_adminAddCategory.js",
+    "test:adminAddProduct": "node test_adminAddProduct.js",
+    "test:adminChangeOrderStatus": "node test_adminChangeOrderStatus.js",
+    "test:adminGenerateReport": "node test_adminGenerateReport.js",
+    "test:adminRejectBuyerRegistration": "node test_adminRejectBuyerRegistration.js",
+    "test:adminSendQuotation": "node test_adminSendQuotation.js",
+    "test:adminViewDashboard": "node test_adminViewDashboard.js",
+    "test:adminViewNotifications": "node test_adminViewNotifications.js",
+    "test:buyerOrderTracking": "node test_buyerOrderTracking.js",
+    "test:buyerPlaceBulkOrderRequest": "node test_buyerPlaceBulkOrderRequest.js",
+    "test:buyerRegistration": "node test_buyerRegistration.js",
+    "test:buyerSearchProduct": "node test_buyerSearchProduct.js",
+    "test:buyerViewDashboard": "node test_buyerViewDashboard.js",
+    "test:buyerViewNotifications": "node test_buyerViewNotifications.js",
+    "test:buyerViewQuotations": "node test_buyerViewQuotations.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
-    "chromedriver": "^151.0.5",
-    "selenium-webdriver": "^4.46.0"
+    "chromedriver": "^126.0.0",
+    "selenium-webdriver": "^4.21.0"
   }
 }

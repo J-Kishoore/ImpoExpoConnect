@@ -1,7 +1,7 @@
 const { Builder, By, until } = require('selenium-webdriver');
 require('chromedriver');
 
-(async function adminViewNotifications() {
+(async function adminViewDashboard() {
   let driver = await new Builder().forBrowser('chrome').build();
 
   try {
@@ -13,34 +13,23 @@ require('chromedriver');
 
     let emailInput = await driver.wait(until.elementLocated(By.id('admin-login-email')), 10000);
     await emailInput.click();
-    emailInput = await driver.wait(until.elementLocated(By.id('admin-login-email')), 10000);
-    await emailInput.click();
     await emailInput.sendKeys('h.kaushi49@gmail.com');
 
     let passwordInput = await driver.wait(until.elementLocated(By.id('admin-login-password')), 10000);
-    await passwordInput.click();
     await passwordInput.sendKeys('himani123');
 
     el = await driver.wait(until.elementLocated(By.css('.px-6')), 10000);
     await el.click();
 
-    el = await driver.wait(until.elementLocated(By.css('.w-full:nth-child(8)')), 10000);
+    await driver.executeScript('window.scrollTo(0,9)');
+    await driver.executeScript('window.scrollTo(0,11)');
+
+    el = await driver.wait(until.elementLocated(By.css('.grid:nth-child(3)')), 10000);
     await el.click();
 
-    el = await driver.wait(until.elementLocated(By.css('.w-full:nth-child(9) .text-\\[10px\\]')), 10000);
-    await el.click();
-
-    await driver.executeScript('window.scrollTo(0,0)');
-
-    el = await driver.wait(until.elementLocated(By.css('.w-full:nth-child(8)')), 10000);
-    await el.click();
-
-    el = await driver.wait(until.elementLocated(By.css('.inline-flex')), 10000);
-    await el.click();
-
-    console.log('adminViewNotifications completed ✅');
+    console.log('adminViewDashboard completed ✅');
   } catch (err) {
-    console.error('adminViewNotifications failed ❌', err);
+    console.error('adminViewDashboard failed ❌', err);
   }
   // Browser intentionally left open — close manually when done.
 })();

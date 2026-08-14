@@ -5,19 +5,23 @@ require('chromedriver');
   let driver = await new Builder().forBrowser('chrome').build();
 
   try {
-    await driver.manage().window().setRect({ width: 1246, height: 860 });
+    await driver.manage().window().setRect({ width: 1246, height: 862 });
     await driver.get('http://localhost:5173/');
 
-    let el = await driver.wait(until.elementLocated(By.css('.hidden > .inline-flex')), 10000);
+    let el = await driver.wait(until.elementLocated(By.css('.px-3:nth-child(2)')), 10000);
     await el.click();
 
-    el = await driver.wait(until.elementLocated(By.css('.hidden > .inline-flex')), 10000);
-    await driver.actions({ bridge: true }).move({ origin: el }).perform();
+    let emailInput = await driver.wait(until.elementLocated(By.id('admin-login-email')), 10000);
+    await emailInput.click();
+    await emailInput.sendKeys('h.kaushi49@gmail.com');
 
-    el = await driver.wait(until.elementLocated(By.css('.relative > .lucide')), 10000);
-    await driver.actions({ bridge: true }).move({ origin: el }).perform();
+    let passwordInput = await driver.wait(until.elementLocated(By.id('admin-login-password')), 10000);
+    await passwordInput.sendKeys('himani123');
 
-    el = await driver.wait(until.elementLocated(By.css('.w-full:nth-child(4) > .truncate')), 10000);
+    el = await driver.wait(until.elementLocated(By.css('.px-6')), 10000);
+    await el.click();
+
+    el = await driver.wait(until.elementLocated(By.css('.flex-1 > .w-full:nth-child(2)')), 10000);
     await driver.actions({ bridge: true }).move({ origin: el }).perform();
 
     let body = await driver.findElement(By.css('body'));
@@ -37,14 +41,19 @@ require('chromedriver');
 
     let nameInput = await driver.wait(until.elementLocated(By.id('edit-category-name')), 10000);
     await nameInput.click();
-    await nameInput.sendKeys('Spices');
+    await nameInput.sendKeys('Vegetables');
 
     el = await driver.wait(until.elementLocated(By.css('.inline-flex:nth-child(1)')), 10000);
+    await el.click();
+
+    el = await driver.wait(until.elementLocated(By.css('.pt-16')), 10000);
     await el.click();
 
     console.log('adminAddCategory completed ✅');
   } catch (err) {
     console.error('adminAddCategory failed ❌', err);
   }
-  
+  // Original script closed this window (self.driver.close()) here.
+  // Per your preference, the browser is intentionally left open instead —
+  // close manually when done.
 })();

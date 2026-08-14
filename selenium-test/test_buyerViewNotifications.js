@@ -5,22 +5,45 @@ require('chromedriver');
   let driver = await new Builder().forBrowser('chrome').build();
 
   try {
-    await driver.manage().window().setRect({ width: 1246, height: 860 });
+    await driver.manage().window().setRect({ width: 1246, height: 862 });
     await driver.get('http://localhost:5173/');
 
     let el = await driver.wait(until.elementLocated(By.css('.hidden > .inline-flex')), 10000);
     await el.click();
 
-    el = await driver.wait(until.elementLocated(By.css('.w-full:nth-child(7) > .truncate')), 10000);
+    el = await driver.wait(until.elementLocated(By.css('.hidden > .inline-flex')), 10000);
+    await driver.actions({ bridge: true }).move({ origin: el }).perform();
+
+    el = await driver.wait(until.elementLocated(By.css('.inline-flex')), 10000);
+    await driver.actions({ bridge: true }).move({ origin: el }).perform();
+
+    el = await driver.wait(until.elementLocated(By.css('.text-white\\/50:nth-child(2)')), 10000);
     await el.click();
 
-    el = await driver.wait(until.elementLocated(By.css('.w-full:nth-child(1) .text-\\[10px\\]')), 10000);
+    el = await driver.wait(until.elementLocated(By.css('.text-white\\/50:nth-child(2)')), 10000);
+    await driver.actions({ bridge: true }).move({ origin: el }).perform();
+
+    el = await driver.wait(until.elementLocated(By.css('.text-\\[\\#1c1917\\]')), 10000);
+    await el.click();
+
+    let emailInput = await driver.wait(until.elementLocated(By.id('buyer-login-email')), 10000);
+    await emailInput.click();
+    await emailInput.sendKeys('h.kaushi49@gmail.com');
+
+    let passwordInput = await driver.wait(until.elementLocated(By.id('buyer-login-password')), 10000);
+    await passwordInput.click();
+    await passwordInput.sendKeys('foodcorner123');
+
+    el = await driver.wait(until.elementLocated(By.css('.px-6')), 10000);
     await el.click();
 
     el = await driver.wait(until.elementLocated(By.css('.w-full:nth-child(7)')), 10000);
     await el.click();
 
-    el = await driver.wait(until.elementLocated(By.css('.rounded-md:nth-child(2)')), 10000);
+    el = await driver.wait(until.elementLocated(By.css('.text-left:nth-child(1)')), 10000);
+    await el.click();
+
+    el = await driver.wait(until.elementLocated(By.css('.w-full:nth-child(7) > .truncate')), 10000);
     await el.click();
 
     el = await driver.wait(until.elementLocated(By.css('.inline-flex')), 10000);
@@ -30,5 +53,5 @@ require('chromedriver');
   } catch (err) {
     console.error('buyerViewNotifications failed ❌', err);
   }
-
+  // Browser intentionally left open — close manually when done.
 })();
