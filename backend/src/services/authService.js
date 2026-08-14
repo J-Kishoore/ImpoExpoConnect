@@ -4,6 +4,7 @@ const { signToken } = require("../utils/jwt");
 const { ApiError } = require("../utils/ApiError");
 const notificationService = require("./notificationService");
 const emailVerificationService = require("./emailVerificationService");
+const emailService = require("./emailService");
 
 const BUYERS = "buyers";
 const ADMINS = "admins";
@@ -88,7 +89,7 @@ async function registerAdmin({ name, email, password }) {
   return { token, admin: stripHash(docRef.id, snap.data()) };
 }
 
-async function loginAdmin({ email, password }) {
+async function loginAdmin({ email, password, meta = {} }) {
   const normalizedEmail = email.toLowerCase().trim();
   const admin = await findByEmail(ADMINS, normalizedEmail);
   if (!admin || !(await comparePassword(password, admin.passwordHash))) {
@@ -96,6 +97,7 @@ async function loginAdmin({ email, password }) {
   }
 
   const token = signToken({ sub: admin.id, role: "admin", email: normalizedEmail });
+  notifyAdminLogin({ admin, meta });
   return { token, admin: stripHash(admin.id, admin) };
 }
 
@@ -104,6 +106,50 @@ async function getProfile({ uid, role }) {
   const doc = await db.collection(collection).doc(uid).get();
   if (!doc.exists) throw new ApiError(404, "Account not found.");
   return stripHash(doc.id, doc.data());
+}
+
+function parseUserAgent(userAgent = "") {
+  const ua = String(userAgent || "");
+  let browser = "Unknown";
+  if (/Edg\//i.test(ua)) browser = "Microsoft Edge";
+  else if (/OPR\/|Opera/i.test(ua)) browser = "Opera";
+  else if (/Trident|MSIE/i.test(ua)) browser = "Internet Explorer";
+  else if (/Firefox/i.test(ua)) browser = "Firefox";
+  else if (/Chrome/i.test(ua)) browser = "Chrome";
+  else if (/Safari/i.test(ua)) browser = "Safari";
+
+  let os = "Unknown";
+  if (/Windows/i.test(ua)) os = "Windows";
+  else if (/Mac OS X|Macintosh/i.test(ua)) os = "macOS";
+  else if (/Android/i.test(ua)) os = "Android";
+  else if (/iPhone|iPad|iOS/i.test(ua)) os = "iOS";
+  else if (/Linux/i.test(ua)) os = "Linux";
+
+  return `${browser} / ${os}`;
+}
+
+function notifyAdminLogin({ admin, meta }) {
+  const loginTime = new Date();
+  const details = [
+    { label: "Admin name", value: admin.name || "—" },
+    { label: "Email", value: admin.email },
+    { label: "Login time", value: loginTime.toLocaleString() },
+  ];
+  if (meta && meta.ip) details.push({ label: "IP address", value: meta.ip });
+  details.push({ label: "Device / browser", value: parseUserAgent(meta && meta.userAgent) });
+
+  emailService.sendEmail({
+    to: admin.email,
+    subject: "New admin login — ImpoExpo Connect",
+    html: emailService.renderLayout({
+      heading: "You are now logged in",
+      paragraphs: [
+        "You have successfully logged in to the ImpoExpo Connect admin panel.",
+        "If this was you, no action is needed. If you do not recognize this login, change your password immediately.",
+      ],
+      details,
+    }),
+  });
 }
 
 module.exports = { registerBuyer, loginBuyer, registerAdmin, loginAdmin, getProfile };

@@ -46,7 +46,11 @@ const loginAdmin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) throw new ApiError(400, "email and password are required.");
 
-  const result = await authService.loginAdmin({ email, password });
+  const result = await authService.loginAdmin({
+    email,
+    password,
+    meta: { ip: req.ip, userAgent: req.headers["user-agent"] },
+  });
   sendSuccess(res, 200, result);
 });
 
